@@ -52,7 +52,7 @@
     {
       "name": "Famous Brazilians",
       "questions": [
-        { "points": 100, "question": "Who is this?", "options": ["Roberto Carlos", "Ronaldinho", "Neymar", "Ronaldo Nazário"], "correctIndex": 1, "image": "./images/ronaldinho.jpg" },
+        { "points": 100, "question": "Who is this?", "options": ["Roberto Carlos", "Ronaldinho", "Neymar", "Ronaldo Nazário"], "correctIndex": 1, "image": "./images/ronaldinho.png" },
         { "points": 200, "question": "Who is this?", "options": ["Rubens Barrichello", "Felipe Massa", "Emerson Fittipaldi", "Ayrton Senna"], "correctIndex": 3, "image": "./images/ayrton-senna.jpg" },
         { "points": 300, "question": "Who is this?", "options": ["Gisele Bündchen", "Adriana Lima", "Isabeli Fontana", "Alessandra Ambrosio"], "correctIndex": 0, "image": "./images/gisele-bundchen.jpg" },
         { "points": 500, "question": "Who is this?", "options": ["Simone Tebet", "Marina Silva", "Dilma Rousseff", "Gleisi Hoffmann"], "correctIndex": 2, "image": "./images/dilma-rousseff.jpg" },
