@@ -1,0 +1,163 @@
+import { loadConfig } from './src/config.js';
+import {
+  createInitialState,
+  applyVerdict,
+  allAnswered,
+  answeredCount,
+} from './src/state.js';
+import { saveState, loadState, clearState } from './src/persistence.js';
+import { renderBoard } from './src/render/board.js';
+import { renderScoreboard } from './src/render/scoreboard.js';
+import {
+  renderQuestionText,
+  renderQuestionOptions,
+  renderQuestionReview,
+} from './src/render/question.js';
+import { renderGameOver } from './src/render/gameOver.js';
+import { renderErrorScreen } from './src/render/errorScreen.js';
+
+const root = document.getElementById('root');
+
+let config = null;
+let state = null;
+
+function render() {
+  if (state.view.name === 'GAME_OVER') {
+    root.innerHTML = `
+      <div class="app">
+        <header class="app-header">
+          <span>Jeopardy</span>
+        </header>
+        <main class="app-main full-width">
+          ${renderGameOver(config, state)}
+        </main>
+        <footer class="app-footer">
+          <button class="btn btn-secondary" data-action="reset">Reset game</button>
+          <span>${answeredCount(state)} of 30 answered</span>
+        </footer>
+      </div>
+    `;
+    return;
+  }
+
+  const pickerName = config.teams[state.pickerIndex].name;
+  let center;
+  switch (state.view.name) {
+    case 'BOARD':
+      center = renderBoard(config, state);
+      break;
+    case 'QUESTION_TEXT':
+      center = renderQuestionText(config, state);
+      break;
+    case 'QUESTION_OPTIONS':
+      center = renderQuestionOptions(config, state);
+      break;
+    case 'QUESTION_REVIEW':
+      center = renderQuestionReview(config, state);
+      break;
+    default:
+      center = `<div>Unknown view: ${state.view.name}</div>`;
+  }
+
+  root.innerHTML = `
+    <div class="app">
+      <header class="app-header">
+        <span>Jeopardy</span>
+        <span class="picker">Up next: <span class="picker-name">${escapeText(pickerName)}</span></span>
+      </header>
+      <main class="app-main">
+        <section class="app-board">${center}</section>
+        ${renderScoreboard(config, state)}
+      </main>
+      <footer class="app-footer">
+        <button class="btn btn-secondary" data-action="reset">Reset game</button>
+        <span>${answeredCount(state)} of 30 answered</span>
+      </footer>
+    </div>
+  `;
+}
+
+function escapeText(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[c]);
+}
+
+function setState(updater) {
+  state = typeof updater === 'function' ? updater(state) : updater;
+  if (state.view.name === 'BOARD' && allAnswered(state)) {
+    state = { ...state, view: { name: 'GAME_OVER' } };
+  }
+  saveState(state, window.localStorage);
+  render();
+}
+
+function handleTileClick(target) {
+  if (target.getAttribute('data-answered') === 'true') return;
+  const ci = Number(target.getAttribute('data-cat'));
+  const qi = Number(target.getAttribute('data-q'));
+  setState({ ...state, view: { name: 'QUESTION_TEXT', category: ci, question: qi } });
+}
+
+function handleAction(action) {
+  if (action === 'show-options') {
+    setState({ ...state, view: { ...state.view, name: 'QUESTION_OPTIONS' } });
+    return;
+  }
+  if (action === 'back-to-board') {
+    setState({ ...state, view: { name: 'BOARD' } });
+    return;
+  }
+  if (action === 'verdict-correct' || action === 'verdict-wrong') {
+    const verdict = action === 'verdict-correct' ? 'correct' : 'wrong';
+    setState({ ...state, view: { ...state.view, name: 'QUESTION_REVIEW', verdict } });
+    return;
+  }
+  if (action === 'continue') {
+    const { category, question, verdict } = state.view;
+    const points = config.categories[category].questions[question].points;
+    const next = applyVerdict(state, category, question, verdict, points);
+    setState({ ...next, view: { name: 'BOARD' } });
+    return;
+  }
+  if (action === 'reset' || action === 'new-game') {
+    if (!confirm('Reset game? All scores and answered tiles will be cleared.')) return;
+    clearState(window.localStorage);
+    setState({ ...createInitialState() });
+    return;
+  }
+}
+
+root.addEventListener('click', (e) => {
+  const tile = e.target.closest('.tile');
+  if (tile && root.contains(tile)) {
+    handleTileClick(tile);
+    return;
+  }
+  const actionEl = e.target.closest('[data-action]');
+  if (actionEl && root.contains(actionEl)) {
+    handleAction(actionEl.getAttribute('data-action'));
+    return;
+  }
+});
+
+async function init() {
+  const result = await loadConfig(window.fetch.bind(window));
+  if (!result.ok) {
+    root.innerHTML = renderErrorScreen(result.errors);
+    return;
+  }
+  config = result.config;
+  const restored = loadState(window.localStorage);
+  if (restored) {
+    state = { ...restored, view: { name: 'BOARD' } };
+    if (allAnswered(state)) {
+      state = { ...state, view: { name: 'GAME_OVER' } };
+    }
+  } else {
+    state = createInitialState();
+  }
+  render();
+}
+
+init();
