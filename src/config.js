@@ -65,8 +65,8 @@ export function validateConfig(config) {
         }
         if (!Array.isArray(q.options)) {
           errors.push(`${prefix}.options must be an array`);
-        } else if (q.options.length < 3 || q.options.length > 5) {
-          errors.push(`${prefix}.options must have 3 to 5 entries (got ${q.options.length})`);
+        } else if (q.options.length < 2 || q.options.length > 5) {
+          errors.push(`${prefix}.options must have 2 to 5 entries (got ${q.options.length})`);
         } else if (!q.options.every(o => typeof o === 'string' && o.trim() !== '')) {
           errors.push(`${prefix}.options must all be non-empty strings`);
         }

@@ -80,7 +80,7 @@ Jeopardy-App/
 - `categories`: exactly 5 entries. Each has `name` (string) and `questions` (exactly 6 entries).
 - `questions[].points`: integer ≥ 0. Each question carries its own value; there is no per-row convention.
 - `questions[].question`: the prompt text shown to all players.
-- `questions[].options`: array of 3 to 5 strings.
+- `questions[].options`: array of 2 to 5 strings.
 - `questions[].correctIndex`: integer, 0-based, must satisfy `0 <= correctIndex < options.length`.
 - `questions[].image` (optional): string. If present, it's used directly as the `src` of an `<img>` shown below the prompt on all three question screens. Can be a relative path (e.g. `./images/foo.jpg`) or any URL.
 

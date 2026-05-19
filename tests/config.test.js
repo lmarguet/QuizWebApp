@@ -56,9 +56,17 @@ test('rejects wrong question count in a category', () => {
   assert.ok(result.errors.some(e => e.includes('categories[1]')));
 });
 
-test('rejects options array too short', () => {
+test('accepts 2 options (binary-choice questions)', () => {
   const c = validConfig();
-  c.categories[0].questions[0].options = ['A', 'B'];
+  c.categories[0].questions[0].options = ['Yes', 'No'];
+  c.categories[0].questions[0].correctIndex = 0;
+  const result = validateConfig(c);
+  assert.equal(result.valid, true, JSON.stringify(result.errors));
+});
+
+test('rejects options array with only 1 entry', () => {
+  const c = validConfig();
+  c.categories[0].questions[0].options = ['Only'];
   c.categories[0].questions[0].correctIndex = 0;
   const result = validateConfig(c);
   assert.equal(result.valid, false);
