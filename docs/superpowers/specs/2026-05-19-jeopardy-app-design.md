@@ -97,8 +97,9 @@ On app start, after `fetch('./game.json')` resolves, the config is validated aga
 
 1. **BOARD** — main game view. Shows the 5×6 grid of point tiles, the sidebar scoreboard, and which team is up next.
 2. **QUESTION_TEXT** — a tile has been opened. Shows the question prompt large, with a host button: **Show options**.
-3. **QUESTION_OPTIONS** — same question, with the 3–5 multiple-choice options revealed (labelled A, B, C, …). Host buttons: **Correct**, **Wrong**.
-4. **GAME_OVER** — replaces BOARD once all 30 questions have been answered. Shows teams ranked by score, winning team's name and color featured at the top, and a **New game** button.
+3. **QUESTION_OPTIONS** — same question, with the 3–5 multiple-choice options revealed (labelled A, B, C, …). Host buttons: **Correct**, **Wrong**, **Back to board**.
+4. **QUESTION_REVIEW** — the verdict has been chosen. Correct option is highlighted green, a banner shows what happened ("Correct! +200 to Null Pointers" or "Wrong — no change"), and a single **Continue** button advances. No state mutation yet — scoring, tile-marking, picker rotation, and save all happen on Continue.
+5. **GAME_OVER** — replaces BOARD once all 30 questions have been answered. Shows teams ranked by score, winning team's name and color featured at the top, and a **New game** button.
 
 ### Per-question flow
 
@@ -110,22 +111,21 @@ BOARD
         └─ host clicks "Back to board" → BOARD (tile NOT marked answered)
 
 QUESTION_OPTIONS
-  ├─ host clicks "Correct"
-  │    ├─ correct option is highlighted (visual confirmation), ~1.5s pause
-  │    ├─ picking team's score += question.points
-  │    ├─ tile is marked answered
-  │    ├─ picker rotates 1 → 2 → 3 → 1
-  │    ├─ state saved to localStorage
-  │    └─ return to BOARD (or GAME_OVER if all 30 answered)
-  ├─ host clicks "Wrong"
-  │    ├─ correct option is highlighted (visual confirmation), ~1.5s pause
-  │    ├─ no score change
-  │    ├─ tile is marked answered
-  │    ├─ picker rotates 1 → 2 → 3 → 1
-  │    ├─ state saved to localStorage
-  │    └─ return to BOARD (or GAME_OVER if all 30 answered)
+  ├─ host clicks "Correct"  → QUESTION_REVIEW (verdict = correct)
+  ├─ host clicks "Wrong"    → QUESTION_REVIEW (verdict = wrong)
   └─ host clicks "Back to board"
-       └─ return to BOARD (tile NOT marked answered, no score change, picker does not rotate)
+       └─ BOARD (tile NOT marked answered, no score change, picker does not rotate)
+
+QUESTION_REVIEW
+  ├─ correct option highlights green
+  ├─ banner shows "Correct! +200 to Null Pointers" or "Wrong — no change"
+  ├─ single host button: "Continue"
+  └─ host clicks "Continue"
+       ├─ if verdict == correct: picking team's score += question.points
+       ├─ tile is marked answered
+       ├─ picker rotates 1 → 2 → 3 → 1
+       ├─ state saved to localStorage
+       └─ BOARD (or GAME_OVER if all 30 answered)
 ```
 
 ### Picker rotation
@@ -157,7 +157,7 @@ QUESTION_OPTIONS
 │    500      500      500    500     500      │ 200           │
 │                                              │               │
 ├──────────────────────────────────────────────┴───────────────┤
-│  [ Reset game ]                       Question 6 / 30        │  ← footer
+│  [ Reset game ]                       6 of 30 answered       │  ← footer
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -166,7 +166,7 @@ QUESTION_OPTIONS
 - The picking team gets an additional bright outline (orange) so it pops on screenshare.
 - Answered tiles show a dash (`—`) on a darker background and are not clickable.
 
-**On QUESTION screens** the sidebar scoreboard and footer remain visible; only the central board area is replaced by the question/options display and the host action buttons.
+**On QUESTION_TEXT, QUESTION_OPTIONS, and QUESTION_REVIEW screens** the sidebar scoreboard and footer remain visible; only the central board area is replaced by the question/options display, the verdict banner (REVIEW only), and the host action buttons. The header continues to show "Up next: *Team Name*" — the team currently answering this question. Because picker rotation is deferred until Continue, the header label stays consistent throughout the question's lifecycle.
 
 ### Visual design
 
@@ -190,6 +190,7 @@ QUESTION_OPTIONS
   view: { name: 'BOARD' }
   // or { name: 'QUESTION_TEXT', category: 2, question: 3 }
   // or { name: 'QUESTION_OPTIONS', category: 2, question: 3 }
+  // or { name: 'QUESTION_REVIEW', category: 2, question: 3, verdict: 'correct' }
   // or { name: 'GAME_OVER' }
 }
 ```
@@ -198,12 +199,13 @@ QUESTION_OPTIONS
 
 - After every state mutation that affects scores, answered tiles, or picker, the relevant slice is written to `localStorage` under the key `jeopardy-app:state`.
 - The `view` field is **not** persisted — on reload, the app always returns to `BOARD` (or `GAME_OVER` if all tiles are answered). This avoids a refresh landing the host mid-question with no context.
-- On app load: if `localStorage` has saved state and the loaded `game.json` still has the same shape (3 teams, 5 categories × 6 questions), restore scores/answered/picker. If the shape changed (e.g. host edited the JSON between sessions), discard saved state and start fresh — with a small notice in the footer for one BOARD render: "Saved state discarded (game.json changed)".
+- On app load: if `localStorage` has saved state, restore `scores`, `answered`, and `pickerIndex`. The schema is fixed (3 teams, 5 categories, 6 questions each), so shape mismatch is impossible.
+- If the host edits `game.json` between sessions (changes question text, points, team names, etc.), saved tile/score state still loads against the new content. This is acceptable because: (a) "answered" is positional and edits typically don't shuffle positions, and (b) if the host wants a clean slate, the **Reset game** button (always visible) clears `localStorage` and starts over.
 
 ## Edge cases and decisions
 
 - **Mis-clicked tile:** the "Back to board" button on question screens reverts cleanly. Tile stays unanswered, picker doesn't rotate, no score change.
-- **Reload mid-question:** returns to BOARD with the tile still unanswered (since view isn't persisted, and we only mark tiles answered after scoring).
+- **Reload mid-question (or mid-review):** returns to BOARD with the tile still unanswered. View isn't persisted, and tile/score mutation only happens when the host clicks Continue on the REVIEW screen — so a reload before then loses the in-flight question but not the game.
 - **Browser closed mid-game:** scores and answered tiles survive in `localStorage`. Reopen the tab → resume from BOARD.
 - **Invalid JSON or schema violation:** error screen lists every problem; app does not start.
 - **All 30 answered:** GAME_OVER replaces BOARD. The only way out is **New game**, which is a full reset (same as the Reset button + confirmation).
