@@ -22,6 +22,35 @@ const root = document.getElementById('root');
 let config = null;
 let state = null;
 let previousScores = null;
+let previousViewKey = null;
+
+function fireConfetti() {
+  const baseColors = ['#f4a261', '#2A9D8F', '#E63946', '#ffffff', '#ffd166', '#06d6a0', '#118ab2'];
+  const teamColors = (config && config.teams) ? config.teams.map(t => t.color) : [];
+  const palette = [...teamColors, ...baseColors];
+  const count = 90;
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.backgroundColor = palette[Math.floor(Math.random() * palette.length)];
+    piece.style.left = (Math.random() * 100) + 'vw';
+    piece.style.setProperty('--delay', (Math.random() * 0.4) + 's');
+    piece.style.setProperty('--duration', (2.2 + Math.random() * 1.8) + 's');
+    piece.style.setProperty('--drift', ((Math.random() * 400) - 200) + 'px');
+    piece.style.setProperty('--rotation', ((Math.random() * 1440) - 720) + 'deg');
+    container.appendChild(piece);
+  }
+
+  document.body.appendChild(container);
+  setTimeout(() => container.remove(), 5000);
+}
+
+function viewKey(view) {
+  return [view.name, view.category, view.question, view.verdict, view.phase, view.revealed].join('|');
+}
 
 function animateScoreCount(el, from, to, duration = 700) {
   const start = performance.now();
@@ -129,6 +158,16 @@ function render() {
   root.innerHTML = renderHTML();
   applyScoreAnimations();
   previousScores = state.scores.slice();
+
+  const currentKey = viewKey(state.view);
+  if (
+    state.view.name === 'QUESTION_REVIEW'
+    && state.view.verdict === 'correct'
+    && currentKey !== previousViewKey
+  ) {
+    fireConfetti();
+  }
+  previousViewKey = currentKey;
 }
 
 function escapeText(s) {
