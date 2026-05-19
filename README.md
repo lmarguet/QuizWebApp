@@ -28,7 +28,7 @@ npm test
 
 ### Schema rules
 
-- **`teams`** — exactly 3 entries. Each is `{ "name": string, "color": string }`. `color` is any valid CSS color (`#E63946`, `red`, `rgb(...)`).
+- **`teams`** — exactly 3 entries. Each is `{ "name": string, "color": string, "members": [string, ...] }`. `color` is any valid CSS color (`#E63946`, `red`, `rgb(...)`). `members` is a non-empty list of names that gets shown during the opening teams reveal.
 - **`categories`** — exactly 5 entries. Each is `{ "name": string, "questions": [...] }`.
 - **`questions`** — exactly 6 entries per category. Each question is:
   ```json
