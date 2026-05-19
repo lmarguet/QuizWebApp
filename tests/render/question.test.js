@@ -124,45 +124,46 @@ test('renderQuestionOptions does NOT have Correct/Wrong verdict buttons', () => 
 
 test('renderQuestionReview highlights correct option', () => {
   // category 0, question 1 → correctIndex = 1 (Beta)
-  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct' }));
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct', answeringTeam: 1 }));
   assert.ok(/data-option="1"[^>]*data-correct="true"/.test(html)
     || /data-correct="true"[^>]*data-option="1"/.test(html));
 });
 
 test('renderQuestionReview marks wrong selection with data-wrong-selection', () => {
   // category 0, question 1 → correctIndex = 1; team picked 3
-  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 3, verdict: 'wrong' }));
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 3, verdict: 'wrong', answeringTeam: 1 }));
   assert.ok(/data-option="3"[^>]*data-wrong-selection="true"/.test(html)
     || /data-wrong-selection="true"[^>]*data-option="3"/.test(html),
     'expected the wrong selection to be marked');
 });
 
 test('renderQuestionReview does NOT mark wrong-selection when verdict is correct', () => {
-  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct' }));
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct', answeringTeam: 1 }));
   assert.ok(!html.includes('data-wrong-selection="true"'));
 });
 
-test('renderQuestionReview correct verdict banner mentions points and team', () => {
-  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct' }));
-  // question (0,1) has points 200; picker is 1 (Null Pointers)
+test('renderQuestionReview correct banner uses view.answeringTeam, not state.pickerIndex', () => {
+  // pickerIndex in stateInQuestion = 1; answeringTeam set to 0 (the team that JUST answered, before rotation)
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct', answeringTeam: 0 }));
+  // question (0,1) has points 200; answeringTeam 0 is Bug Squashers
   assert.ok(html.includes('200'));
-  assert.ok(html.includes('Null Pointers'));
+  assert.ok(html.includes('Bug Squashers'), 'banner should name the answering team (index 0), not the current picker (index 1)');
   assert.ok(html.toLowerCase().includes('correct'));
 });
 
 test('renderQuestionReview wrong verdict banner does not mention points', () => {
-  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 3, verdict: 'wrong' }));
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 3, verdict: 'wrong', answeringTeam: 1 }));
   assert.ok(html.toLowerCase().includes('wrong'));
 });
 
 test('renderQuestionReview has Back to board button (replaces Continue)', () => {
-  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 0, { selectedIndex: 0, verdict: 'correct' }));
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 0, { selectedIndex: 0, verdict: 'correct', answeringTeam: 0 }));
   assert.ok(html.includes('data-action="back-to-board"'));
   assert.ok(!html.includes('data-action="continue"'));
 });
 
 test('renderQuestionReview options are not clickable (no select-option action)', () => {
-  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct' }));
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct', answeringTeam: 1 }));
   assert.ok(!html.includes('data-action="select-option"'));
 });
 

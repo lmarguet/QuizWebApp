@@ -60,7 +60,10 @@ export function renderQuestionOptions(config, state) {
 
 export function renderQuestionReview(config, state) {
   const q = getQuestion(config, state);
-  const team = config.teams[state.pickerIndex];
+  // The answering team is captured at Submit time (before picker rotation),
+  // so the banner names the team that actually answered — not the next picker.
+  const teamIndex = state.view.answeringTeam ?? state.pickerIndex;
+  const team = config.teams[teamIndex];
   const verdict = state.view.verdict;
   const selectedIndex = state.view.selectedIndex;
   const banner = verdict === 'correct'

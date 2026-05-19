@@ -222,20 +222,15 @@ function handleAction(action, actionEl) {
     if (state.view.name !== 'QUESTION_OPTIONS') return;
     const { category, question, selectedIndex } = state.view;
     if (selectedIndex == null) return;
-    const correctIndex = config.categories[category].questions[question].correctIndex;
-    const verdict = selectedIndex === correctIndex ? 'correct' : 'wrong';
-    setState({ ...state, view: { name: 'QUESTION_REVIEW', category, question, selectedIndex, verdict } });
+    const q = config.categories[category].questions[question];
+    const verdict = selectedIndex === q.correctIndex ? 'correct' : 'wrong';
+    const answeringTeam = state.pickerIndex; // capture BEFORE applyVerdict rotates picker
+    const next = applyVerdict(state, category, question, verdict, q.points);
+    setState({ ...next, view: { name: 'QUESTION_REVIEW', category, question, selectedIndex, verdict, answeringTeam } });
     return;
   }
   if (action === 'back-to-board') {
-    if (state.view.name === 'QUESTION_REVIEW') {
-      const { category, question, verdict } = state.view;
-      const points = config.categories[category].questions[question].points;
-      const next = applyVerdict(state, category, question, verdict, points);
-      setState({ ...next, view: { name: 'BOARD' } });
-    } else {
-      setState({ ...state, view: { name: 'BOARD' } });
-    }
+    setState({ ...state, view: { name: 'BOARD' } });
     return;
   }
   if (action === 'show-results') {

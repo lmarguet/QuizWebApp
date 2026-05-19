@@ -103,7 +103,7 @@ On app start, after `fetch('./game.json')` resolves, the config is validated aga
 1. **BOARD** — main game view. Shows the 5×6 grid of point tiles, the sidebar scoreboard, and which team is up next.
 2. **QUESTION_TEXT** — a tile has been opened. Shows the question prompt large, with a host button: **Show options**.
 3. **QUESTION_OPTIONS** — same question, with the 3–5 multiple-choice options revealed (labelled A, B, C, …). Options are clickable: the host clicks the answer the team committed to, and it becomes the selection (visually outlined in the accent color). Host buttons: **Submit** (disabled until an option is selected) and **Back to board** (escape).
-4. **QUESTION_REVIEW** — Submit has been pressed. Correct option is highlighted green; if the team's selection was wrong, it's outlined in red so both the pick and the correct answer are visible. A banner shows what happened ("Correct! +200 to Null Pointers" or "Wrong — 0 points"). The verdict is derived from `selectedIndex === correctIndex` — the host doesn't judge. Single button **Back to board** advances. No state mutation happens until that button is pressed — scoring, tile-marking, picker rotation, and save all happen then.
+4. **QUESTION_REVIEW** — Submit has been pressed. Scoring, tile-marking, picker rotation, and save all happen on Submit, so the sidebar score animates and the celebration (bounce + confetti for a correct answer) happens on this screen. The correct option is highlighted green; if the team's selection was wrong, it's outlined in red so both the pick and the correct answer are visible. A banner shows what happened ("Correct! +200 to Null Pointers" or "Wrong — 0 points") — it names the team that just answered, captured in `view.answeringTeam` (since `state.pickerIndex` has already advanced). Single button **Back to board** is pure navigation.
 5. **GAME_OVER** — shows teams ranked by score. The header announces the result: "Winner: *Team*" (in their color) for a sole winner, or "It's a tie!" with the tied teams listed for a draw. Reachable two ways: automatically when all 30 questions are answered, or manually via the **Show results** footer button on BOARD/QUESTION screens. When reached manually before all tiles are answered, a **Back to board** button appears alongside **New game** so the host can resume play; when reached automatically (all answered), only **New game** is offered.
 
 ### Per-question flow
@@ -118,21 +118,24 @@ BOARD
 QUESTION_OPTIONS
   ├─ host clicks an option        → selectedIndex updates; option visually outlined; Submit becomes enabled
   ├─ host clicks a different option → selectedIndex updates; previous selection cleared
-  ├─ host clicks "Submit"         → QUESTION_REVIEW (verdict derived: selectedIndex === correctIndex ? 'correct' : 'wrong'; selectedIndex preserved)
+  ├─ host clicks "Submit"
+  │    ├─ verdict derived: selectedIndex === correctIndex ? 'correct' : 'wrong'
+  │    ├─ answeringTeam captured = current pickerIndex (before rotation)
+  │    ├─ if verdict == correct: answering team's score += question.points
+  │    ├─ tile is marked answered
+  │    ├─ picker rotates 1 → 2 → 3 → 1
+  │    ├─ state saved to localStorage
+  │    └─ QUESTION_REVIEW (carries selectedIndex, verdict, answeringTeam)
   └─ host clicks "Back to board"
        └─ BOARD (tile NOT marked answered, no score change, picker does not rotate)
 
 QUESTION_REVIEW
   ├─ correct option highlights green
   ├─ if verdict == wrong: selected option also outlined in red (so both pick and answer are visible)
-  ├─ banner shows "Correct! +200 to Null Pointers" or "Wrong — 0 points"
+  ├─ banner shows "Correct! +200 to Null Pointers" (using view.answeringTeam) or "Wrong — 0 points"
+  ├─ if verdict == correct: sidebar score animates up; confetti and bounce animation fire on entry
   ├─ single host button: "Back to board"
-  └─ host clicks "Back to board"
-       ├─ if verdict == correct: picking team's score += question.points
-       ├─ tile is marked answered
-       ├─ picker rotates 1 → 2 → 3 → 1
-       ├─ state saved to localStorage
-       └─ BOARD (or GAME_OVER if all 30 answered)
+  └─ host clicks "Back to board" → BOARD (pure navigation, no state mutation; or GAME_OVER if all 30 answered)
 ```
 
 ### Picker rotation
@@ -200,7 +203,7 @@ QUESTION_REVIEW
   // or { name: 'BOARD' }
   // or { name: 'QUESTION_TEXT', category: 2, question: 3 }
   // or { name: 'QUESTION_OPTIONS', category: 2, question: 3, selectedIndex: null | 0..options.length-1 }
-  // or { name: 'QUESTION_REVIEW', category: 2, question: 3, selectedIndex: number, verdict: 'correct' | 'wrong' }
+  // or { name: 'QUESTION_REVIEW', category: 2, question: 3, selectedIndex: number, verdict: 'correct' | 'wrong', answeringTeam: 0..2 }
   // or { name: 'GAME_OVER' }
 }
 ```
@@ -215,7 +218,8 @@ QUESTION_REVIEW
 ## Edge cases and decisions
 
 - **Mis-clicked tile:** the "Back to board" button on question screens reverts cleanly. Tile stays unanswered, picker doesn't rotate, no score change.
-- **Reload mid-question (or mid-review):** returns to BOARD with the tile still unanswered. View isn't persisted, and tile/score mutation only happens when the host clicks Continue on the REVIEW screen — so a reload before then loses the in-flight question but not the game.
+- **Reload mid-question (before Submit):** returns to BOARD with the tile still unanswered. The tile/score mutation only happens on Submit, so a reload before Submit loses the in-flight question but not the game.
+- **Reload mid-review (after Submit):** returns to BOARD with the tile already marked answered and the score already applied. The celebration (animation, confetti) is lost on reload, but the result stands.
 - **Browser closed mid-game:** scores and answered tiles survive in `localStorage`. Reopen the tab → resume from BOARD.
 - **Invalid JSON or schema violation:** error screen lists every problem; app does not start.
 - **All 30 answered:** GAME_OVER replaces BOARD. The only way out is **New game**, which is a full reset (same as the Reset button + confirmation).
