@@ -50,14 +50,14 @@
       ]
     },
     {
-      "name": "Food",
+      "name": "Famous Brazilians",
       "questions": [
-        { "points": 100, "question": "Which country is the origin of sushi?", "options": ["China", "Korea", "Japan", "Thailand"], "correctIndex": 2 },
-        { "points": 200, "question": "What is the main ingredient in guacamole?", "options": ["Tomato", "Avocado", "Lime", "Onion"], "correctIndex": 1 },
-        { "points": 300, "question": "Which spice is the most expensive by weight?", "options": ["Vanilla", "Cardamom", "Saffron", "Truffle"], "correctIndex": 2 },
-        { "points": 500, "question": "Tiramisu is a traditional dessert from which country?", "options": ["France", "Italy", "Spain", "Greece"], "correctIndex": 1 },
-        { "points": 700, "question": "Which type of pastry is used to make a croissant?", "options": ["Choux", "Filo", "Puff", "Shortcrust"], "correctIndex": 2 },
-        { "points": 1000, "question": "Kimchi is a staple of which country's cuisine?", "options": ["China", "Vietnam", "Korea", "Mongolia"], "correctIndex": 2 }
+        { "points": 100, "question": "Who is this?", "options": ["Roberto Carlos", "Ronaldinho", "Neymar", "Ronaldo Nazário"], "correctIndex": 1, "image": "./images/ronaldinho.jpg" },
+        { "points": 200, "question": "Who is this?", "options": ["Rubens Barrichello", "Felipe Massa", "Emerson Fittipaldi", "Ayrton Senna"], "correctIndex": 3, "image": "./images/ayrton-senna.jpg" },
+        { "points": 300, "question": "Who is this?", "options": ["Gisele Bündchen", "Adriana Lima", "Isabeli Fontana", "Alessandra Ambrosio"], "correctIndex": 0, "image": "./images/gisele-bundchen.jpg" },
+        { "points": 500, "question": "Who is this?", "options": ["Simone Tebet", "Marina Silva", "Dilma Rousseff", "Gleisi Hoffmann"], "correctIndex": 2, "image": "./images/dilma-rousseff.jpg" },
+        { "points": 700, "question": "Who is this?", "options": ["Vitor Belfort", "Lyoto Machida", "José Aldo", "Anderson Silva"], "correctIndex": 3, "image": "./images/anderson-silva.jpg" },
+        { "points": 1000, "question": "Who is this?", "options": ["Marcelo Melo", "Gustavo Kuerten", "Thomaz Bellucci", "Fernando Meligeni"], "correctIndex": 1, "image": "./images/gustavo-kuerten.jpg" }
       ]
     }
   ]
