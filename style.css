@@ -298,6 +298,15 @@ html, body {
   100% { transform: translate(var(--drift, 0px), 105vh) rotate(var(--rotation, 720deg)); opacity: 1; }
 }
 
+.emoji-piece {
+  position: absolute;
+  top: -40px;
+  opacity: 0;
+  user-select: none;
+  pointer-events: none;
+  animation: confetti-fall var(--duration, 3s) cubic-bezier(0.2, 0.6, 0.4, 1) var(--delay, 0s) forwards;
+}
+
 .question-actions {
   display: flex;
   gap: 0.5rem;

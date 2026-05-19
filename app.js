@@ -48,6 +48,29 @@ function fireConfetti() {
   setTimeout(() => container.remove(), 5000);
 }
 
+function fireSadRain() {
+  const emojis = ['\u{1F622}', '\u{1F62D}', '\u{1F4A9}']; // 😢 😭 💩
+  const count = 60;
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'emoji-piece';
+    piece.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    piece.style.left = (Math.random() * 100) + 'vw';
+    piece.style.setProperty('--delay', (Math.random() * 0.5) + 's');
+    piece.style.setProperty('--duration', (2.5 + Math.random() * 1.8) + 's');
+    piece.style.setProperty('--drift', ((Math.random() * 300) - 150) + 'px');
+    piece.style.setProperty('--rotation', ((Math.random() * 720) - 360) + 'deg');
+    piece.style.fontSize = (1.6 + Math.random() * 1.4) + 'rem';
+    container.appendChild(piece);
+  }
+
+  document.body.appendChild(container);
+  setTimeout(() => container.remove(), 5000);
+}
+
 function viewKey(view) {
   return [view.name, view.category, view.question, view.verdict, view.phase, view.revealed].join('|');
 }
@@ -160,12 +183,12 @@ function render() {
   previousScores = state.scores.slice();
 
   const currentKey = viewKey(state.view);
-  if (
-    state.view.name === 'QUESTION_REVIEW'
-    && state.view.verdict === 'correct'
-    && currentKey !== previousViewKey
-  ) {
-    fireConfetti();
+  if (state.view.name === 'QUESTION_REVIEW' && currentKey !== previousViewKey) {
+    if (state.view.verdict === 'correct') {
+      fireConfetti();
+    } else if (state.view.verdict === 'wrong') {
+      fireSadRain();
+    }
   }
   previousViewKey = currentKey;
 }
