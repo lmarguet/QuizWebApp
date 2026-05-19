@@ -8,12 +8,12 @@
     {
       "name": "Movies",
       "questions": [
-        { "points": 100, "question": "Which 1994 film features a character named Forrest?", "options": ["Pulp Fiction", "Forrest Gump", "The Lion King", "Speed"], "correctIndex": 1 },
-        { "points": 200, "question": "Who directed Inception?", "options": ["Christopher Nolan", "Steven Spielberg", "James Cameron", "Denis Villeneuve"], "correctIndex": 0 },
-        { "points": 300, "question": "What year was The Matrix released?", "options": ["1997", "1998", "1999", "2000"], "correctIndex": 2 },
-        { "points": 500, "question": "Which actor played the Joker in The Dark Knight?", "options": ["Jared Leto", "Joaquin Phoenix", "Heath Ledger", "Jack Nicholson"], "correctIndex": 2 },
-        { "points": 700, "question": "Which Pixar film features a rat named Remy?", "options": ["Up", "Ratatouille", "Cars", "Wall-E"], "correctIndex": 1 },
-        { "points": 1000, "question": "How many films are in the original Star Wars trilogy?", "options": ["3", "4", "5", "6"], "correctIndex": 0 }
+        { "points": 100, "question": "Which 1994 film features a character named Forrest?", "options": ["Pulp Fiction", "Forrest Gump", "The Lion King", "Speed"], "correctIndex": 1, "image": "https://placehold.co/600x400/2a3568/f4a261?text=Forrest+Gump" },
+        { "points": 200, "question": "Who directed Inception?", "options": ["Christopher Nolan", "Steven Spielberg", "James Cameron", "Denis Villeneuve"], "correctIndex": 0, "image": "https://placehold.co/600x400/2a3568/f4a261?text=Inception" },
+        { "points": 300, "question": "What year was The Matrix released?", "options": ["1997", "1998", "1999", "2000"], "correctIndex": 2, "image": "https://placehold.co/600x400/2a3568/f4a261?text=The+Matrix" },
+        { "points": 500, "question": "Which actor played the Joker in The Dark Knight?", "options": ["Jared Leto", "Joaquin Phoenix", "Heath Ledger", "Jack Nicholson"], "correctIndex": 2, "image": "https://placehold.co/600x400/2a3568/f4a261?text=The+Dark+Knight" },
+        { "points": 700, "question": "Which Pixar film features a rat named Remy?", "options": ["Up", "Ratatouille", "Cars", "Wall-E"], "correctIndex": 1, "image": "https://placehold.co/600x400/2a3568/f4a261?text=Ratatouille" },
+        { "points": 1000, "question": "How many films are in the original Star Wars trilogy?", "options": ["3", "4", "5", "6"], "correctIndex": 0, "image": "https://placehold.co/600x400/2a3568/f4a261?text=Star+Wars" }
       ]
     },
     {
