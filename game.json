@@ -17,14 +17,14 @@
       ]
     },
     {
-      "name": "History",
+      "name": "World History",
       "questions": [
-        { "points": 100, "question": "In what year did the Berlin Wall fall?", "options": ["1987", "1989", "1991", "1993"], "correctIndex": 1 },
-        { "points": 200, "question": "Who was the first president of the United States?", "options": ["Thomas Jefferson", "John Adams", "George Washington", "Benjamin Franklin"], "correctIndex": 2 },
-        { "points": 300, "question": "The Great Fire of London occurred in which year?", "options": ["1666", "1766", "1566", "1866"], "correctIndex": 0 },
-        { "points": 500, "question": "Which civilization built Machu Picchu?", "options": ["Aztec", "Maya", "Inca", "Olmec"], "correctIndex": 2 },
-        { "points": 700, "question": "The Hundred Years War lasted approximately how long?", "options": ["100 years", "116 years", "85 years", "120 years"], "correctIndex": 1 },
-        { "points": 1000, "question": "Who was the longest-reigning British monarch before Elizabeth II?", "options": ["Victoria", "George III", "Henry VIII", "Edward VII"], "correctIndex": 0 }
+        { "points": 100, "question": "In which country did the French Revolution take place?", "options": ["Belgium", "Austria", "France", "Democratic Baguette Republic"], "correctIndex": 2 },
+        { "points": 200, "question": "Which city was destroyed by the eruption of Mount Vesuvius in 79 CE?", "options": ["Naples", "Pompeii", "Alexandria", "Ash Vegas"], "correctIndex": 1 },
+        { "points": 300, "question": "Which empire built Machu Picchu?", "options": ["The Aztec Empire", "The Maya Civilization", "The Pokemon Company", "The Inca Empire"], "correctIndex": 3 },
+        { "points": 500, "question": "Who was the last emperor of Russia?", "options": ["Peter the Great", "Nicholas II", "Ivan the Terrible", "Alexander III"], "correctIndex": 1 },
+        { "points": 700, "question": "Which empire was ruled from the city of Tenochtitlan?", "options": ["The Inca Empire", "The Zapotec Civilization", "The Aztec Empire", "Mexico Beta Launch"], "correctIndex": 2 },
+        { "points": 1000, "question": "Which empire did the Battle of Manzikert in 1071 critically weaken?", "options": ["The Ottoman Empire", "The Roman Empire", "The Byzantine Empire"], "correctIndex": 2 }
       ]
     },
     {
