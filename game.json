@@ -28,14 +28,14 @@
       ]
     },
     {
-      "name": "Code",
+      "name": "Science, Space & Nerdy Things",
       "questions": [
-        { "points": 100, "question": "What does HTML stand for?", "options": ["Hyper Trainer Marking Language", "HyperText Markup Language", "HyperText Marketing Language", "HyperText Modeling Language"], "correctIndex": 1 },
-        { "points": 200, "question": "Which company developed TypeScript?", "options": ["Google", "Facebook", "Microsoft", "Apple"], "correctIndex": 2 },
-        { "points": 300, "question": "What is the default port for HTTPS?", "options": ["80", "443", "8080", "22"], "correctIndex": 1 },
-        { "points": 500, "question": "Who created the Linux kernel?", "options": ["Richard Stallman", "Linus Torvalds", "Ken Thompson", "Dennis Ritchie"], "correctIndex": 1 },
-        { "points": 700, "question": "Which sorting algorithm has the best average-case time complexity?", "options": ["Bubble sort", "Insertion sort", "Quick sort", "Selection sort"], "correctIndex": 2 },
-        { "points": 1000, "question": "In Git, which command discards uncommitted changes in a file?", "options": ["git revert", "git reset", "git checkout --", "git clean"], "correctIndex": 2 }
+        { "points": 100, "question": "What planet is known as the Red Planet?", "options": ["Jupiter", "The Angry Marble", "Mars", "Saturn"], "correctIndex": 2 },
+        { "points": 200, "question": "What is the closest planet to the Sun?", "options": ["Venus", "Mercury", "Earth", "Jupiter"], "correctIndex": 1 },
+        { "points": 300, "question": "What is the chemical symbol for gold?", "options": ["Au", "BTC", "Gd", "Go"], "correctIndex": 0 },
+        { "points": 500, "question": "What number is represented by the binary value 1010?", "options": ["2", "4", "1010", "10"], "correctIndex": 3 },
+        { "points": 700, "question": "What is the SI unit of magnetic flux density?", "options": ["Newton", "Farad", "Tesla", "Big Magnet Energy"], "correctIndex": 2 },
+        { "points": 1000, "question": "Which mathematical constant is approximately 1.618 and often associated with the golden ratio?", "options": ["Pi / π", "Phi / φ", "Tau / τ", "Euler's number / e"], "correctIndex": 1 }
       ]
     },
     {
