@@ -57,7 +57,7 @@
         { "points": 300, "question": "Who is this?", "options": ["Gisele Bündchen", "Adriana Lima", "Isabeli Fontana", "Alessandra Ambrosio"], "correctIndex": 0, "image": "./images/gisele-bundchen.jpg" },
         { "points": 500, "question": "Who is this?", "options": ["Simone Tebet", "Marina Silva", "Dilma Rousseff", "Gleisi Hoffmann"], "correctIndex": 2, "image": "./images/dilma-rousseff.jpg" },
         { "points": 700, "question": "Who is this?", "options": ["Vitor Belfort", "Lyoto Machida", "José Aldo", "Anderson Silva"], "correctIndex": 3, "image": "./images/anderson-silva.jpg" },
-        { "points": 1000, "question": "Who is this?", "options": ["Marcelo Melo", "Gustavo Kuerten", "Thomaz Bellucci", "Fernando Meligeni"], "correctIndex": 1, "image": "./images/gustavo-kuerten.jpg" }
+        { "points": 1000, "question": "Who is this?", "options": ["Marcelo Melo", "Gustavo Kuerten", "Thomaz Bellucci", "Fernando Meligeni"], "correctIndex": 1, "image": "./images/gustavo-kuerten.png" }
       ]
     }
   ]
