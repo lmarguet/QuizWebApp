@@ -1,0 +1,64 @@
+{
+  "teams": [
+    { "name": "The Bug Squashers", "color": "#E63946" },
+    { "name": "Null Pointers",     "color": "#2A9D8F" },
+    { "name": "Stack Overflows",   "color": "#F4A261" }
+  ],
+  "categories": [
+    {
+      "name": "Movies",
+      "questions": [
+        { "points": 100, "question": "Which 1994 film features a character named Forrest?", "options": ["Pulp Fiction", "Forrest Gump", "The Lion King", "Speed"], "correctIndex": 1 },
+        { "points": 200, "question": "Who directed Inception?", "options": ["Christopher Nolan", "Steven Spielberg", "James Cameron", "Denis Villeneuve"], "correctIndex": 0 },
+        { "points": 300, "question": "What year was The Matrix released?", "options": ["1997", "1998", "1999", "2000"], "correctIndex": 2 },
+        { "points": 400, "question": "Which actor played the Joker in The Dark Knight?", "options": ["Jared Leto", "Joaquin Phoenix", "Heath Ledger", "Jack Nicholson"], "correctIndex": 2 },
+        { "points": 500, "question": "Which Pixar film features a rat named Remy?", "options": ["Up", "Ratatouille", "Cars", "Wall-E"], "correctIndex": 1 },
+        { "points": 600, "question": "How many films are in the original Star Wars trilogy?", "options": ["3", "4", "5", "6"], "correctIndex": 0 }
+      ]
+    },
+    {
+      "name": "History",
+      "questions": [
+        { "points": 100, "question": "In what year did the Berlin Wall fall?", "options": ["1987", "1989", "1991", "1993"], "correctIndex": 1 },
+        { "points": 200, "question": "Who was the first president of the United States?", "options": ["Thomas Jefferson", "John Adams", "George Washington", "Benjamin Franklin"], "correctIndex": 2 },
+        { "points": 300, "question": "The Great Fire of London occurred in which year?", "options": ["1666", "1766", "1566", "1866"], "correctIndex": 0 },
+        { "points": 400, "question": "Which civilization built Machu Picchu?", "options": ["Aztec", "Maya", "Inca", "Olmec"], "correctIndex": 2 },
+        { "points": 500, "question": "The Hundred Years War lasted approximately how long?", "options": ["100 years", "116 years", "85 years", "120 years"], "correctIndex": 1 },
+        { "points": 600, "question": "Who was the longest-reigning British monarch before Elizabeth II?", "options": ["Victoria", "George III", "Henry VIII", "Edward VII"], "correctIndex": 0 }
+      ]
+    },
+    {
+      "name": "Code",
+      "questions": [
+        { "points": 100, "question": "What does HTML stand for?", "options": ["Hyper Trainer Marking Language", "HyperText Markup Language", "HyperText Marketing Language", "HyperText Modeling Language"], "correctIndex": 1 },
+        { "points": 200, "question": "Which company developed TypeScript?", "options": ["Google", "Facebook", "Microsoft", "Apple"], "correctIndex": 2 },
+        { "points": 300, "question": "What is the default port for HTTPS?", "options": ["80", "443", "8080", "22"], "correctIndex": 1 },
+        { "points": 400, "question": "Who created the Linux kernel?", "options": ["Richard Stallman", "Linus Torvalds", "Ken Thompson", "Dennis Ritchie"], "correctIndex": 1 },
+        { "points": 500, "question": "Which sorting algorithm has the best average-case time complexity?", "options": ["Bubble sort", "Insertion sort", "Quick sort", "Selection sort"], "correctIndex": 2 },
+        { "points": 600, "question": "In Git, which command discards uncommitted changes in a file?", "options": ["git revert", "git reset", "git checkout --", "git clean"], "correctIndex": 2 }
+      ]
+    },
+    {
+      "name": "Music",
+      "questions": [
+        { "points": 100, "question": "How many strings does a standard guitar have?", "options": ["4", "5", "6", "7"], "correctIndex": 2 },
+        { "points": 200, "question": "Who composed The Four Seasons?", "options": ["Bach", "Mozart", "Vivaldi", "Beethoven"], "correctIndex": 2 },
+        { "points": 300, "question": "Which band released the album Dark Side of the Moon?", "options": ["Led Zeppelin", "The Who", "Pink Floyd", "The Rolling Stones"], "correctIndex": 2 },
+        { "points": 400, "question": "What instrument did Miles Davis primarily play?", "options": ["Saxophone", "Trumpet", "Piano", "Drums"], "correctIndex": 1 },
+        { "points": 500, "question": "Which Beatles album was released last?", "options": ["Abbey Road", "Let It Be", "The White Album", "Help!"], "correctIndex": 1 },
+        { "points": 600, "question": "Which note is 'A' above middle C tuned to (Hz)?", "options": ["432", "440", "444", "448"], "correctIndex": 1 }
+      ]
+    },
+    {
+      "name": "Food",
+      "questions": [
+        { "points": 100, "question": "Which country is the origin of sushi?", "options": ["China", "Korea", "Japan", "Thailand"], "correctIndex": 2 },
+        { "points": 200, "question": "What is the main ingredient in guacamole?", "options": ["Tomato", "Avocado", "Lime", "Onion"], "correctIndex": 1 },
+        { "points": 300, "question": "Which spice is the most expensive by weight?", "options": ["Vanilla", "Cardamom", "Saffron", "Truffle"], "correctIndex": 2 },
+        { "points": 400, "question": "Tiramisu is a traditional dessert from which country?", "options": ["France", "Italy", "Spain", "Greece"], "correctIndex": 1 },
+        { "points": 500, "question": "Which type of pastry is used to make a croissant?", "options": ["Choux", "Filo", "Puff", "Shortcrust"], "correctIndex": 2 },
+        { "points": 600, "question": "Kimchi is a staple of which country's cuisine?", "options": ["China", "Vietnam", "Korea", "Mongolia"], "correctIndex": 2 }
+      ]
+    }
+  ]
+}
