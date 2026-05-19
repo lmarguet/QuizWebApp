@@ -27,7 +27,7 @@ function render() {
     root.innerHTML = `
       <div class="app">
         <header class="app-header">
-          <span>Jeopardy</span>
+          <span>Team Quiz</span>
         </header>
         <main class="app-main full-width">
           ${renderGameOver(config, state)}
@@ -45,7 +45,7 @@ function render() {
     root.innerHTML = `
       <div class="app">
         <header class="app-header">
-          <span>Jeopardy</span>
+          <span>Team Quiz</span>
         </header>
         <main class="app-main full-width">
           ${renderIntro(config, state)}
@@ -81,7 +81,7 @@ function render() {
   root.innerHTML = `
     <div class="app">
       <header class="app-header">
-        <span>Jeopardy</span>
+        <span>Team Quiz</span>
         <span class="picker">Up next: <span class="picker-name">${escapeText(pickerName)}</span></span>
       </header>
       <main class="app-main">
