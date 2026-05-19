@@ -15,6 +15,7 @@ import {
 } from './src/render/question.js';
 import { renderGameOver } from './src/render/gameOver.js';
 import { renderErrorScreen } from './src/render/errorScreen.js';
+import { renderIntro } from './src/render/intro.js';
 
 const root = document.getElementById('root');
 
@@ -34,6 +35,24 @@ function render() {
         <footer class="app-footer">
           <button class="btn btn-secondary" data-action="reset">Reset game</button>
           <span>${answeredCount(state)} of 30 answered</span>
+        </footer>
+      </div>
+    `;
+    return;
+  }
+
+  if (state.view.name === 'INTRO') {
+    root.innerHTML = `
+      <div class="app">
+        <header class="app-header">
+          <span>Jeopardy</span>
+        </header>
+        <main class="app-main full-width">
+          ${renderIntro(config, state)}
+        </main>
+        <footer class="app-footer">
+          <span></span>
+          <span></span>
         </footer>
       </div>
     `;
@@ -88,7 +107,9 @@ function setState(updater) {
   if (state.view.name === 'BOARD' && allAnswered(state)) {
     state = { ...state, view: { name: 'GAME_OVER' } };
   }
-  saveState(state, window.localStorage);
+  if (state.view.name !== 'INTRO') {
+    saveState(state, window.localStorage);
+  }
   render();
 }
 
@@ -100,6 +121,16 @@ function handleTileClick(target) {
 }
 
 function handleAction(action, actionEl) {
+  if (action === 'intro-advance') {
+    if (state.view.name !== 'INTRO') return;
+    const total = config.categories.length;
+    if (state.view.revealed < total) {
+      setState({ ...state, view: { ...state.view, revealed: state.view.revealed + 1 } });
+    } else {
+      setState({ ...state, view: { name: 'BOARD' } });
+    }
+    return;
+  }
   if (action === 'show-options') {
     setState({ ...state, view: { ...state.view, name: 'QUESTION_OPTIONS', selectedIndex: null } });
     return;

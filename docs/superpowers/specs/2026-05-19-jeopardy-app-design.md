@@ -95,6 +95,7 @@ On app start, after `fetch('./game.json')` resolves, the config is validated aga
 
 ### Screens (states)
 
+0. **INTRO** — opening reveal. Shown on the very first load (no saved state) and after every Reset / New game. Displays a vertical list of 5 slots, one per category; unrevealed slots show "?". The host clicks **Next** to reveal the next category name (top to bottom). Once all 5 are revealed the button becomes **Start game**, which transitions to BOARD. Persistence is intentionally skipped during INTRO so a refresh mid-intro restarts from the beginning rather than landing in a half-revealed state.
 1. **BOARD** — main game view. Shows the 5×6 grid of point tiles, the sidebar scoreboard, and which team is up next.
 2. **QUESTION_TEXT** — a tile has been opened. Shows the question prompt large, with a host button: **Show options**.
 3. **QUESTION_OPTIONS** — same question, with the 3–5 multiple-choice options revealed (labelled A, B, C, …). Options are clickable: the host clicks the answer the team committed to, and it becomes the selection (visually outlined in the accent color). Host buttons: **Submit** (disabled until an option is selected) and **Back to board** (escape).
@@ -190,7 +191,8 @@ QUESTION_REVIEW
     [false, false, false, false, false, false],
     // ...4 more
   ],
-  view: { name: 'BOARD' }
+  view: { name: 'INTRO', revealed: 0 }   // fresh state — categories reveal one-by-one
+  // or { name: 'BOARD' }
   // or { name: 'QUESTION_TEXT', category: 2, question: 3 }
   // or { name: 'QUESTION_OPTIONS', category: 2, question: 3, selectedIndex: null | 0..options.length-1 }
   // or { name: 'QUESTION_REVIEW', category: 2, question: 3, selectedIndex: number, verdict: 'correct' | 'wrong' }
@@ -200,7 +202,7 @@ QUESTION_REVIEW
 
 ### Persistence
 
-- After every state mutation that affects scores, answered tiles, or picker, the relevant slice is written to `localStorage` under the key `jeopardy-app:state`.
+- After every state mutation that affects scores, answered tiles, or picker, the relevant slice is written to `localStorage` under the key `jeopardy-app:state`. Mutations during the INTRO view are NOT persisted, so closing the tab mid-intro and reopening always restarts the intro cleanly.
 - The `view` field is **not** persisted — on reload, the app always returns to `BOARD` (or `GAME_OVER` if all tiles are answered). This avoids a refresh landing the host mid-question with no context.
 - On app load: if `localStorage` has saved state, restore `scores`, `answered`, and `pickerIndex`. The schema is fixed (3 teams, 5 categories, 6 questions each), so shape mismatch is impossible.
 - If the host edits `game.json` between sessions (changes question text, points, team names, etc.), saved tile/score state still loads against the new content. This is acceptable because: (a) "answered" is positional and edits typically don't shuffle positions, and (b) if the host wants a clean slate, the **Reset game** button (always visible) clears `localStorage` and starts over.

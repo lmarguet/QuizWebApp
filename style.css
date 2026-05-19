@@ -303,6 +303,57 @@ html, body {
 
 .game-over .btn { margin-top: 1.5rem; }
 
+/* ---- Intro / category reveal ---- */
+
+.intro {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.intro-title {
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0 0 2rem;
+}
+
+.intro-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.intro-slot {
+  background: var(--bg-elev);
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  transition: background 200ms ease, color 200ms ease, transform 200ms ease;
+}
+
+.intro-slot-hidden {
+  color: var(--border);
+  background: var(--bg-deep);
+}
+
+.intro-slot-revealed {
+  color: var(--accent);
+  text-transform: uppercase;
+  animation: intro-reveal 250ms ease-out;
+}
+
+@keyframes intro-reveal {
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
 /* ---- Error screen ---- */
 
 .error-screen {
