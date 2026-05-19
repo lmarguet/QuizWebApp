@@ -1,0 +1,301 @@
+:root {
+  --bg: #0b1020;
+  --bg-elev: #1a2247;
+  --bg-deep: #0d1330;
+  --border: #2a3568;
+  --text: #e6e9f5;
+  --text-dim: #9aa3c7;
+  --accent: #f4a261;
+  --correct: #2a9d8f;
+  --wrong: #b23a48;
+  --tile-points: #f4a261;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 18px;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ---- App shell ---- */
+
+.app {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+}
+
+.app-header {
+  padding: 1rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-header .picker {
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+  color: var(--text-dim);
+}
+
+.app-header .picker .picker-name {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.app-main {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  min-height: 0;
+}
+
+.app-footer {
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+/* ---- Board ---- */
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: minmax(60px, auto);
+  gap: 6px;
+}
+
+.cat {
+  background: #2d3a7c;
+  padding: 0.6rem 0.4rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile {
+  background: var(--bg-elev);
+  color: var(--tile-points);
+  font-weight: 800;
+  font-size: 1.75rem;
+  text-align: center;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 80ms ease, background 80ms ease;
+}
+
+.tile:hover:not(.done) {
+  background: #243070;
+  transform: scale(1.02);
+}
+
+.tile.done {
+  background: var(--bg-deep);
+  color: var(--border);
+  cursor: default;
+}
+
+/* ---- Scoreboard sidebar ---- */
+
+.scoreboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.team-panel {
+  background: var(--bg-elev);
+  border-left: 4px solid #888;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.team-panel[data-active="true"] {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.team-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.team-score {
+  font-size: 1.75rem;
+  font-weight: 800;
+}
+
+/* ---- Question views ---- */
+
+.question-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1rem 0;
+}
+
+.question-prompt {
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  padding: 1rem 1.5rem;
+  background: var(--bg-elev);
+  border-radius: 6px;
+}
+
+.options-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.option {
+  background: var(--bg-elev);
+  padding: 1rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.15rem;
+}
+
+.option[data-correct="true"] {
+  background: var(--correct);
+  color: #fff;
+}
+
+.option-letter {
+  font-weight: 800;
+  font-size: 1.25rem;
+  background: rgba(255,255,255,0.08);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  min-width: 2rem;
+  text-align: center;
+}
+
+.option[data-correct="true"] .option-letter {
+  background: rgba(255,255,255,0.2);
+}
+
+.verdict {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: 6px;
+}
+
+.verdict-correct { background: var(--correct); color: #fff; }
+.verdict-wrong { background: var(--wrong); color: #fff; }
+
+.question-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+
+.btn {
+  background: var(--accent);
+  color: #1a1a1a;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn:hover { filter: brightness(1.05); }
+.btn-secondary { background: var(--bg-elev); color: var(--text); border: 1px solid var(--border); }
+.btn-correct { background: var(--correct); color: #fff; }
+.btn-wrong { background: var(--wrong); color: #fff; }
+
+/* ---- Game over ---- */
+
+.game-over {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+}
+
+.game-over h1 {
+  font-size: 3rem;
+  margin: 0 0 1.5rem;
+}
+
+.game-over-row {
+  background: var(--bg-elev);
+  border-left: 6px solid #888;
+  padding: 1rem 1.5rem;
+  border-radius: 4px;
+  margin: 0.5rem auto;
+  max-width: 600px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.game-over-row[data-rank="1"] {
+  font-size: 1.5rem;
+  font-weight: 700;
+  transform: scale(1.05);
+}
+
+.game-over-row .rank { font-weight: 800; opacity: 0.6; }
+.game-over-row .team-score { font-size: 2rem; font-weight: 800; }
+
+.game-over .btn { margin-top: 1.5rem; }
+
+/* ---- Error screen ---- */
+
+.error-screen {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.error-screen h1 { color: var(--wrong); }
+.error-screen code { background: var(--bg-elev); padding: 0.1em 0.4em; border-radius: 3px; }
+.error-list li { margin: 0.25rem 0; font-family: ui-monospace, "SF Mono", monospace; }
+
+/* When game-over takes over, hide the scoreboard column */
+.app-main.full-width { grid-template-columns: 1fr; }
