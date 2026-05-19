@@ -98,7 +98,7 @@ On app start, after `fetch('./game.json')` resolves, the config is validated aga
 1. **BOARD** — main game view. Shows the 5×6 grid of point tiles, the sidebar scoreboard, and which team is up next.
 2. **QUESTION_TEXT** — a tile has been opened. Shows the question prompt large, with a host button: **Show options**.
 3. **QUESTION_OPTIONS** — same question, with the 3–5 multiple-choice options revealed (labelled A, B, C, …). Options are clickable: the host clicks the answer the team committed to, and it becomes the selection (visually outlined in the accent color). Host buttons: **Submit** (disabled until an option is selected) and **Back to board** (escape).
-4. **QUESTION_REVIEW** — Submit has been pressed. Correct option is highlighted green; if the team's selection was wrong, it's outlined in red so both the pick and the correct answer are visible. A banner shows what happened ("Correct! +200 to Null Pointers" or "Wrong — no change"). The verdict is derived from `selectedIndex === correctIndex` — the host doesn't judge. Single button **Back to board** advances. No state mutation happens until that button is pressed — scoring, tile-marking, picker rotation, and save all happen then.
+4. **QUESTION_REVIEW** — Submit has been pressed. Correct option is highlighted green; if the team's selection was wrong, it's outlined in red so both the pick and the correct answer are visible. A banner shows what happened ("Correct! +200 to Null Pointers" or "Wrong — 0 points"). The verdict is derived from `selectedIndex === correctIndex` — the host doesn't judge. Single button **Back to board** advances. No state mutation happens until that button is pressed — scoring, tile-marking, picker rotation, and save all happen then.
 5. **GAME_OVER** — replaces BOARD once all 30 questions have been answered. Shows teams ranked by score, winning team's name and color featured at the top, and a **New game** button.
 
 ### Per-question flow
@@ -120,7 +120,7 @@ QUESTION_OPTIONS
 QUESTION_REVIEW
   ├─ correct option highlights green
   ├─ if verdict == wrong: selected option also outlined in red (so both pick and answer are visible)
-  ├─ banner shows "Correct! +200 to Null Pointers" or "Wrong — no change"
+  ├─ banner shows "Correct! +200 to Null Pointers" or "Wrong — 0 points"
   ├─ single host button: "Back to board"
   └─ host clicks "Back to board"
        ├─ if verdict == correct: picking team's score += question.points

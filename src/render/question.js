@@ -58,7 +58,7 @@ export function renderQuestionReview(config, state) {
   const selectedIndex = state.view.selectedIndex;
   const banner = verdict === 'correct'
     ? `<div class="verdict verdict-correct">Correct! +${q.points} to ${escapeHtml(team.name)}</div>`
-    : `<div class="verdict verdict-wrong">Wrong — no change</div>`;
+    : `<div class="verdict verdict-wrong">Wrong — 0 points</div>`;
   return `<div class="question-view">
     <div class="question-prompt">${escapeHtml(q.question)}</div>
     <div class="options-list">${renderOptions(q, { name: 'review', selectedIndex })}</div>
