@@ -74,3 +74,30 @@ export function validateConfig(config) {
 
   return { valid: errors.length === 0, errors };
 }
+
+export async function loadConfig(fetchFn) {
+  let response;
+  try {
+    response = await fetchFn('./game.json');
+  } catch (e) {
+    return { ok: false, errors: [`failed to fetch game.json: ${e.message}`] };
+  }
+
+  if (!response.ok) {
+    return { ok: false, errors: [`failed to load game.json: ${response.status} ${response.statusText || ''}`.trim()] };
+  }
+
+  let parsed;
+  try {
+    parsed = await response.json();
+  } catch (e) {
+    return { ok: false, errors: [`game.json is not valid JSON: ${e.message}`] };
+  }
+
+  const validation = validateConfig(parsed);
+  if (!validation.valid) {
+    return { ok: false, errors: validation.errors };
+  }
+
+  return { ok: true, config: parsed };
+}

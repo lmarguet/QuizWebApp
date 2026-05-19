@@ -112,3 +112,49 @@ test('rejects null/undefined config', () => {
   assert.equal(validateConfig(null).valid, false);
   assert.equal(validateConfig(undefined).valid, false);
 });
+
+import { loadConfig } from '../src/config.js';
+
+function mockFetch(response) {
+  return async () => response;
+}
+
+test('loadConfig returns ok with valid config', async () => {
+  const cfg = validConfig();
+  const fetchFn = mockFetch({
+    ok: true,
+    json: async () => cfg,
+  });
+  const result = await loadConfig(fetchFn);
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.config, cfg);
+});
+
+test('loadConfig returns errors for invalid config', async () => {
+  const cfg = validConfig();
+  cfg.teams.pop();
+  const fetchFn = mockFetch({
+    ok: true,
+    json: async () => cfg,
+  });
+  const result = await loadConfig(fetchFn);
+  assert.equal(result.ok, false);
+  assert.ok(result.errors.length > 0);
+});
+
+test('loadConfig returns error on fetch failure', async () => {
+  const fetchFn = mockFetch({ ok: false, status: 404, statusText: 'Not Found' });
+  const result = await loadConfig(fetchFn);
+  assert.equal(result.ok, false);
+  assert.ok(result.errors.some(e => e.includes('404')));
+});
+
+test('loadConfig returns error on JSON parse failure', async () => {
+  const fetchFn = mockFetch({
+    ok: true,
+    json: async () => { throw new SyntaxError('Unexpected token'); },
+  });
+  const result = await loadConfig(fetchFn);
+  assert.equal(result.ok, false);
+  assert.ok(result.errors.some(e => e.toLowerCase().includes('json')));
+});
