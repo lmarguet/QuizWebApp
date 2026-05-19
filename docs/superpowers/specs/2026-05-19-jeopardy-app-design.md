@@ -97,8 +97,8 @@ On app start, after `fetch('./game.json')` resolves, the config is validated aga
 
 1. **BOARD** — main game view. Shows the 5×6 grid of point tiles, the sidebar scoreboard, and which team is up next.
 2. **QUESTION_TEXT** — a tile has been opened. Shows the question prompt large, with a host button: **Show options**.
-3. **QUESTION_OPTIONS** — same question, with the 3–5 multiple-choice options revealed (labelled A, B, C, …). Host buttons: **Correct**, **Wrong**, **Back to board**.
-4. **QUESTION_REVIEW** — the verdict has been chosen. Correct option is highlighted green, a banner shows what happened ("Correct! +200 to Null Pointers" or "Wrong — no change"), and a single **Continue** button advances. No state mutation yet — scoring, tile-marking, picker rotation, and save all happen on Continue.
+3. **QUESTION_OPTIONS** — same question, with the 3–5 multiple-choice options revealed (labelled A, B, C, …). Options are clickable: the host clicks the answer the team committed to, and it becomes the selection (visually outlined in the accent color). Host buttons: **Submit** (disabled until an option is selected) and **Back to board** (escape).
+4. **QUESTION_REVIEW** — Submit has been pressed. Correct option is highlighted green; if the team's selection was wrong, it's outlined in red so both the pick and the correct answer are visible. A banner shows what happened ("Correct! +200 to Null Pointers" or "Wrong — no change"). The verdict is derived from `selectedIndex === correctIndex` — the host doesn't judge. Single button **Back to board** advances. No state mutation happens until that button is pressed — scoring, tile-marking, picker rotation, and save all happen then.
 5. **GAME_OVER** — replaces BOARD once all 30 questions have been answered. Shows teams ranked by score, winning team's name and color featured at the top, and a **New game** button.
 
 ### Per-question flow
@@ -111,16 +111,18 @@ BOARD
         └─ host clicks "Back to board" → BOARD (tile NOT marked answered)
 
 QUESTION_OPTIONS
-  ├─ host clicks "Correct"  → QUESTION_REVIEW (verdict = correct)
-  ├─ host clicks "Wrong"    → QUESTION_REVIEW (verdict = wrong)
+  ├─ host clicks an option        → selectedIndex updates; option visually outlined; Submit becomes enabled
+  ├─ host clicks a different option → selectedIndex updates; previous selection cleared
+  ├─ host clicks "Submit"         → QUESTION_REVIEW (verdict derived: selectedIndex === correctIndex ? 'correct' : 'wrong'; selectedIndex preserved)
   └─ host clicks "Back to board"
        └─ BOARD (tile NOT marked answered, no score change, picker does not rotate)
 
 QUESTION_REVIEW
   ├─ correct option highlights green
+  ├─ if verdict == wrong: selected option also outlined in red (so both pick and answer are visible)
   ├─ banner shows "Correct! +200 to Null Pointers" or "Wrong — no change"
-  ├─ single host button: "Continue"
-  └─ host clicks "Continue"
+  ├─ single host button: "Back to board"
+  └─ host clicks "Back to board"
        ├─ if verdict == correct: picking team's score += question.points
        ├─ tile is marked answered
        ├─ picker rotates 1 → 2 → 3 → 1
@@ -173,7 +175,8 @@ QUESTION_REVIEW
 - Dark background (classic game-show feel, easier on eyes during a long meeting).
 - Large type for question text and option labels — must be readable when the browser tab is scaled down in a Zoom share.
 - Options are labelled A, B, C, D, E in the order they appear in the JSON.
-- The "Correct" highlight is the only state where any option is tinted (green, distinctive). All other times the options are visually equal — no spoilers.
+- On QUESTION_OPTIONS, the team's current selection is outlined in the accent color. The correct answer is never indicated before Submit — no spoilers.
+- On QUESTION_REVIEW, the correct option is tinted green (distinctive). If the selection was wrong, the selected option is outlined in red so both the team's pick and the right answer are visible.
 
 ## State and persistence
 
@@ -189,8 +192,8 @@ QUESTION_REVIEW
   ],
   view: { name: 'BOARD' }
   // or { name: 'QUESTION_TEXT', category: 2, question: 3 }
-  // or { name: 'QUESTION_OPTIONS', category: 2, question: 3 }
-  // or { name: 'QUESTION_REVIEW', category: 2, question: 3, verdict: 'correct' }
+  // or { name: 'QUESTION_OPTIONS', category: 2, question: 3, selectedIndex: null | 0..options.length-1 }
+  // or { name: 'QUESTION_REVIEW', category: 2, question: 3, selectedIndex: number, verdict: 'correct' | 'wrong' }
   // or { name: 'GAME_OVER' }
 }
 ```

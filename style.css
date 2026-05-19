@@ -194,11 +194,26 @@ html, body {
   align-items: center;
   gap: 0.75rem;
   font-size: 1.15rem;
+  border: 2px solid transparent;
+  transition: transform 80ms ease, border-color 80ms ease, background 80ms ease;
+}
+
+.option[data-action="select-option"] { cursor: pointer; user-select: none; }
+.option[data-action="select-option"]:hover { background: #243070; }
+
+.option[data-selected="true"] {
+  border-color: var(--accent);
+  background: #243070;
 }
 
 .option[data-correct="true"] {
   background: var(--correct);
   color: #fff;
+  border-color: transparent;
+}
+
+.option[data-wrong-selection="true"] {
+  border-color: var(--wrong);
 }
 
 .option-letter {
@@ -246,6 +261,7 @@ html, body {
 }
 
 .btn:hover { filter: brightness(1.05); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; filter: none; }
 .btn-secondary { background: var(--bg-elev); color: var(--text); border: 1px solid var(--border); }
 .btn-correct { background: var(--correct); color: #fff; }
 .btn-wrong { background: var(--wrong); color: #fff; }

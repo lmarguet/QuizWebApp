@@ -25,9 +25,8 @@ function cfg() {
   };
 }
 
-function stateInQuestion(viewName, category, question, verdict) {
-  const view = { name: viewName, category, question };
-  if (verdict) view.verdict = verdict;
+function stateInQuestion(viewName, category, question, extras = {}) {
+  const view = { name: viewName, category, question, ...extras };
   return {
     pickerIndex: 1,
     scores: [0, 0, 0],
@@ -58,7 +57,7 @@ test('renderQuestionText has Show options and Back to board buttons', () => {
 // QUESTION_OPTIONS
 
 test('renderQuestionOptions shows all options labelled A,B,C,D', () => {
-  const html = renderQuestionOptions(cfg(), stateInQuestion('QUESTION_OPTIONS', 0, 0));
+  const html = renderQuestionOptions(cfg(), stateInQuestion('QUESTION_OPTIONS', 0, 0, { selectedIndex: null }));
   assert.ok(html.includes('Alpha'));
   assert.ok(html.includes('Beta'));
   assert.ok(html.includes('Gamma'));
@@ -67,29 +66,84 @@ test('renderQuestionOptions shows all options labelled A,B,C,D', () => {
   assert.ok(html.includes('>D<') || html.includes('>D '));
 });
 
-test('renderQuestionOptions does NOT highlight any option', () => {
-  const html = renderQuestionOptions(cfg(), stateInQuestion('QUESTION_OPTIONS', 0, 0));
+test('renderQuestionOptions does NOT highlight any option as correct', () => {
+  const html = renderQuestionOptions(cfg(), stateInQuestion('QUESTION_OPTIONS', 0, 0, { selectedIndex: null }));
   assert.ok(!html.includes('data-correct="true"'));
 });
 
-test('renderQuestionOptions has Correct/Wrong/Back buttons', () => {
-  const html = renderQuestionOptions(cfg(), stateInQuestion('QUESTION_OPTIONS', 0, 0));
-  assert.ok(html.includes('data-action="verdict-correct"'));
-  assert.ok(html.includes('data-action="verdict-wrong"'));
+test('renderQuestionOptions makes options clickable via data-action=select-option', () => {
+  const html = renderQuestionOptions(cfg(), stateInQuestion('QUESTION_OPTIONS', 0, 0, { selectedIndex: null }));
+  // every option div carries data-action="select-option"
+  const matches = (html.match(/data-action="select-option"/g) || []).length;
+  assert.equal(matches, 4, 'expected 4 selectable options');
+});
+
+test('renderQuestionOptions marks the selected option with data-selected', () => {
+  const html = renderQuestionOptions(cfg(), stateInQuestion('QUESTION_OPTIONS', 0, 0, { selectedIndex: 2 }));
+  assert.ok(/data-option="2"[^>]*data-selected="true"/.test(html)
+    || /data-selected="true"[^>]*data-option="2"/.test(html),
+    'expected option 2 to be marked selected');
+  // and no other
+  const selectedCount = (html.match(/data-selected="true"/g) || []).length;
+  assert.equal(selectedCount, 1, 'expected exactly one selected option');
+});
+
+test('renderQuestionOptions has no data-selected when nothing selected', () => {
+  const html = renderQuestionOptions(cfg(), stateInQuestion('QUESTION_OPTIONS', 0, 0, { selectedIndex: null }));
+  assert.ok(!html.includes('data-selected="true"'));
+});
+
+test('renderQuestionOptions Submit button is disabled when no selection', () => {
+  const html = renderQuestionOptions(cfg(), stateInQuestion('QUESTION_OPTIONS', 0, 0, { selectedIndex: null }));
+  // submit button exists and is disabled
+  assert.ok(/<button[^>]*data-action="submit"[^>]*disabled/.test(html)
+    || /<button[^>]*disabled[^>]*data-action="submit"/.test(html),
+    'Submit should be disabled when no selection');
+});
+
+test('renderQuestionOptions Submit button is enabled when an option is selected', () => {
+  const html = renderQuestionOptions(cfg(), stateInQuestion('QUESTION_OPTIONS', 0, 0, { selectedIndex: 1 }));
+  // Submit button present but NOT disabled
+  const submitMatch = html.match(/<button[^>]*data-action="submit"[^>]*>/);
+  assert.ok(submitMatch, 'Submit button should be present');
+  assert.ok(!submitMatch[0].includes('disabled'), 'Submit should not be disabled when an option is selected');
+});
+
+test('renderQuestionOptions has Back to board button', () => {
+  const html = renderQuestionOptions(cfg(), stateInQuestion('QUESTION_OPTIONS', 0, 0, { selectedIndex: null }));
   assert.ok(html.includes('data-action="back-to-board"'));
+});
+
+test('renderQuestionOptions does NOT have Correct/Wrong verdict buttons', () => {
+  const html = renderQuestionOptions(cfg(), stateInQuestion('QUESTION_OPTIONS', 0, 0, { selectedIndex: 0 }));
+  assert.ok(!html.includes('data-action="verdict-correct"'));
+  assert.ok(!html.includes('data-action="verdict-wrong"'));
 });
 
 // QUESTION_REVIEW
 
 test('renderQuestionReview highlights correct option', () => {
   // category 0, question 1 → correctIndex = 1 (Beta)
-  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, 'correct'));
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct' }));
   assert.ok(/data-option="1"[^>]*data-correct="true"/.test(html)
     || /data-correct="true"[^>]*data-option="1"/.test(html));
 });
 
+test('renderQuestionReview marks wrong selection with data-wrong-selection', () => {
+  // category 0, question 1 → correctIndex = 1; team picked 3
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 3, verdict: 'wrong' }));
+  assert.ok(/data-option="3"[^>]*data-wrong-selection="true"/.test(html)
+    || /data-wrong-selection="true"[^>]*data-option="3"/.test(html),
+    'expected the wrong selection to be marked');
+});
+
+test('renderQuestionReview does NOT mark wrong-selection when verdict is correct', () => {
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct' }));
+  assert.ok(!html.includes('data-wrong-selection="true"'));
+});
+
 test('renderQuestionReview correct verdict banner mentions points and team', () => {
-  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, 'correct'));
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct' }));
   // question (0,1) has points 200; picker is 1 (Null Pointers)
   assert.ok(html.includes('200'));
   assert.ok(html.includes('Null Pointers'));
@@ -97,13 +151,19 @@ test('renderQuestionReview correct verdict banner mentions points and team', () 
 });
 
 test('renderQuestionReview wrong verdict banner does not mention points', () => {
-  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, 'wrong'));
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 3, verdict: 'wrong' }));
   assert.ok(html.toLowerCase().includes('wrong'));
 });
 
-test('renderQuestionReview has Continue button', () => {
-  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 0, 'wrong'));
-  assert.ok(html.includes('data-action="continue"'));
+test('renderQuestionReview has Back to board button (replaces Continue)', () => {
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 0, { selectedIndex: 0, verdict: 'correct' }));
+  assert.ok(html.includes('data-action="back-to-board"'));
+  assert.ok(!html.includes('data-action="continue"'));
+});
+
+test('renderQuestionReview options are not clickable (no select-option action)', () => {
+  const html = renderQuestionReview(cfg(), stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct' }));
+  assert.ok(!html.includes('data-action="select-option"'));
 });
 
 test('renderQuestionText escapes question text', () => {

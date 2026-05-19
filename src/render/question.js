@@ -4,11 +4,22 @@ function getQuestion(config, state) {
   return config.categories[state.view.category].questions[state.view.question];
 }
 
-function renderOptions(question, { highlightCorrect }) {
+function renderOptions(question, mode) {
   return question.options.map((opt, i) => {
     const label = String.fromCharCode(65 + i); // A, B, C, ...
-    const correctAttr = highlightCorrect && i === question.correctIndex ? ' data-correct="true"' : '';
-    return `<div class="option" data-option="${i}"${correctAttr}>
+    const attrs = [`data-option="${i}"`];
+
+    if (mode.name === 'select') {
+      attrs.push('data-action="select-option"');
+      if (mode.selectedIndex === i) attrs.push('data-selected="true"');
+    } else { // 'review'
+      if (i === question.correctIndex) attrs.push('data-correct="true"');
+      if (mode.selectedIndex !== question.correctIndex && i === mode.selectedIndex) {
+        attrs.push('data-wrong-selection="true"');
+      }
+    }
+
+    return `<div class="option" ${attrs.join(' ')}>
       <span class="option-letter">${label}</span>
       <span class="option-text">${escapeHtml(opt)}</span>
     </div>`;
@@ -28,12 +39,13 @@ export function renderQuestionText(config, state) {
 
 export function renderQuestionOptions(config, state) {
   const q = getQuestion(config, state);
+  const selectedIndex = state.view.selectedIndex ?? null;
+  const submitDisabled = selectedIndex === null ? ' disabled' : '';
   return `<div class="question-view">
     <div class="question-prompt">${escapeHtml(q.question)}</div>
-    <div class="options-list">${renderOptions(q, { highlightCorrect: false })}</div>
+    <div class="options-list">${renderOptions(q, { name: 'select', selectedIndex })}</div>
     <div class="question-actions">
-      <button class="btn btn-correct" data-action="verdict-correct">Correct</button>
-      <button class="btn btn-wrong" data-action="verdict-wrong">Wrong</button>
+      <button class="btn" data-action="submit"${submitDisabled}>Submit</button>
       <button class="btn btn-secondary" data-action="back-to-board">Back to board</button>
     </div>
   </div>`;
@@ -43,18 +55,16 @@ export function renderQuestionReview(config, state) {
   const q = getQuestion(config, state);
   const team = config.teams[state.pickerIndex];
   const verdict = state.view.verdict;
-  let banner;
-  if (verdict === 'correct') {
-    banner = `<div class="verdict verdict-correct">Correct! +${q.points} to ${escapeHtml(team.name)}</div>`;
-  } else {
-    banner = `<div class="verdict verdict-wrong">Wrong — no change</div>`;
-  }
+  const selectedIndex = state.view.selectedIndex;
+  const banner = verdict === 'correct'
+    ? `<div class="verdict verdict-correct">Correct! +${q.points} to ${escapeHtml(team.name)}</div>`
+    : `<div class="verdict verdict-wrong">Wrong — no change</div>`;
   return `<div class="question-view">
     <div class="question-prompt">${escapeHtml(q.question)}</div>
-    <div class="options-list">${renderOptions(q, { highlightCorrect: true })}</div>
+    <div class="options-list">${renderOptions(q, { name: 'review', selectedIndex })}</div>
     ${banner}
     <div class="question-actions">
-      <button class="btn" data-action="continue">Continue</button>
+      <button class="btn" data-action="back-to-board">Back to board</button>
     </div>
   </div>`;
 }

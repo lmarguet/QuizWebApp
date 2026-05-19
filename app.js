@@ -99,25 +99,35 @@ function handleTileClick(target) {
   setState({ ...state, view: { name: 'QUESTION_TEXT', category: ci, question: qi } });
 }
 
-function handleAction(action) {
+function handleAction(action, actionEl) {
   if (action === 'show-options') {
-    setState({ ...state, view: { ...state.view, name: 'QUESTION_OPTIONS' } });
+    setState({ ...state, view: { ...state.view, name: 'QUESTION_OPTIONS', selectedIndex: null } });
+    return;
+  }
+  if (action === 'select-option') {
+    if (state.view.name !== 'QUESTION_OPTIONS') return;
+    const idx = Number(actionEl.getAttribute('data-option'));
+    setState({ ...state, view: { ...state.view, selectedIndex: idx } });
+    return;
+  }
+  if (action === 'submit') {
+    if (state.view.name !== 'QUESTION_OPTIONS') return;
+    const { category, question, selectedIndex } = state.view;
+    if (selectedIndex == null) return;
+    const correctIndex = config.categories[category].questions[question].correctIndex;
+    const verdict = selectedIndex === correctIndex ? 'correct' : 'wrong';
+    setState({ ...state, view: { name: 'QUESTION_REVIEW', category, question, selectedIndex, verdict } });
     return;
   }
   if (action === 'back-to-board') {
-    setState({ ...state, view: { name: 'BOARD' } });
-    return;
-  }
-  if (action === 'verdict-correct' || action === 'verdict-wrong') {
-    const verdict = action === 'verdict-correct' ? 'correct' : 'wrong';
-    setState({ ...state, view: { ...state.view, name: 'QUESTION_REVIEW', verdict } });
-    return;
-  }
-  if (action === 'continue') {
-    const { category, question, verdict } = state.view;
-    const points = config.categories[category].questions[question].points;
-    const next = applyVerdict(state, category, question, verdict, points);
-    setState({ ...next, view: { name: 'BOARD' } });
+    if (state.view.name === 'QUESTION_REVIEW') {
+      const { category, question, verdict } = state.view;
+      const points = config.categories[category].questions[question].points;
+      const next = applyVerdict(state, category, question, verdict, points);
+      setState({ ...next, view: { name: 'BOARD' } });
+    } else {
+      setState({ ...state, view: { name: 'BOARD' } });
+    }
     return;
   }
   if (action === 'reset' || action === 'new-game') {
@@ -129,14 +139,15 @@ function handleAction(action) {
 }
 
 root.addEventListener('click', (e) => {
+  const actionEl = e.target.closest('[data-action]');
+  if (actionEl && root.contains(actionEl)) {
+    if (actionEl.disabled) return;
+    handleAction(actionEl.getAttribute('data-action'), actionEl);
+    return;
+  }
   const tile = e.target.closest('.tile');
   if (tile && root.contains(tile)) {
     handleTileClick(tile);
-    return;
-  }
-  const actionEl = e.target.closest('[data-action]');
-  if (actionEl && root.contains(actionEl)) {
-    handleAction(actionEl.getAttribute('data-action'));
     return;
   }
 });
