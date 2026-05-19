@@ -4,6 +4,11 @@ function getQuestion(config, state) {
   return config.categories[state.view.category].questions[state.view.question];
 }
 
+function renderImage(question) {
+  if (!question.image) return '';
+  return `<img class="question-image" src="${escapeHtml(question.image)}" alt="">`;
+}
+
 function renderOptions(question, mode) {
   return question.options.map((opt, i) => {
     const label = String.fromCharCode(65 + i); // A, B, C, ...
@@ -30,6 +35,7 @@ export function renderQuestionText(config, state) {
   const q = getQuestion(config, state);
   return `<div class="question-view">
     <div class="question-prompt">${escapeHtml(q.question)}</div>
+    ${renderImage(q)}
     <div class="question-actions">
       <button class="btn" data-action="show-options">Show options</button>
       <button class="btn btn-secondary" data-action="back-to-board">Back to board</button>
@@ -43,6 +49,7 @@ export function renderQuestionOptions(config, state) {
   const submitDisabled = selectedIndex === null ? ' disabled' : '';
   return `<div class="question-view">
     <div class="question-prompt">${escapeHtml(q.question)}</div>
+    ${renderImage(q)}
     <div class="options-list">${renderOptions(q, { name: 'select', selectedIndex })}</div>
     <div class="question-actions">
       <button class="btn" data-action="submit"${submitDisabled}>Submit</button>
@@ -61,6 +68,7 @@ export function renderQuestionReview(config, state) {
     : `<div class="verdict verdict-wrong">Wrong — 0 points</div>`;
   return `<div class="question-view">
     <div class="question-prompt">${escapeHtml(q.question)}</div>
+    ${renderImage(q)}
     <div class="options-list">${renderOptions(q, { name: 'review', selectedIndex })}</div>
     ${banner}
     <div class="question-actions">

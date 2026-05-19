@@ -42,6 +42,7 @@ npm test
   - `points` — non-negative integer. Each question carries its own value (use this to encode difficulty).
   - `options` — 3 to 5 strings.
   - `correctIndex` — **0-based** index into `options`. In the example above, `correctIndex: 1` means **"Forrest Gump"** is correct (because it is the second entry, at index `1`).
+  - `image` (optional) — a string used directly as the `<img src>` for an illustration shown beneath the prompt on all three question screens. Use either a relative path (e.g. `"./images/movies-q1.jpg"` — put the file in an `images/` folder next to `game.json`) or any URL. Example: `"image": "./images/forrest-gump.jpg"`.
 
 If you change the JSON between game sessions and want a clean slate (no leftover scores/answered tiles from a previous game), click **Reset game** in the footer after the page loads.
 

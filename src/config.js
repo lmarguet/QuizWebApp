@@ -75,6 +75,9 @@ export function validateConfig(config) {
         } else if (Array.isArray(q.options) && (q.correctIndex < 0 || q.correctIndex >= q.options.length)) {
           errors.push(`${prefix}.correctIndex is ${q.correctIndex} but options has ${q.options.length} entries`);
         }
+        if (q.image !== undefined && (typeof q.image !== 'string' || q.image.trim() === '')) {
+          errors.push(`${prefix}.image must be a non-empty string when present`);
+        }
       });
     });
   }

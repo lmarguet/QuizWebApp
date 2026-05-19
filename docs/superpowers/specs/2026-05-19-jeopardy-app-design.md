@@ -82,6 +82,7 @@ Jeopardy-App/
 - `questions[].question`: the prompt text shown to all players.
 - `questions[].options`: array of 3 to 5 strings.
 - `questions[].correctIndex`: integer, 0-based, must satisfy `0 <= correctIndex < options.length`.
+- `questions[].image` (optional): string. If present, it's used directly as the `src` of an `<img>` shown below the prompt on all three question screens. Can be a relative path (e.g. `./images/foo.jpg`) or any URL.
 
 ### Identification
 

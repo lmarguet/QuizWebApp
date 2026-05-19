@@ -122,6 +122,29 @@ test('rejects non-string entry in team members', () => {
   assert.ok(result.errors.some(e => e.includes('teams[1].members')));
 });
 
+test('accepts optional question.image as a non-empty string', () => {
+  const c = validConfig();
+  c.categories[0].questions[0].image = './images/foo.jpg';
+  const result = validateConfig(c);
+  assert.equal(result.valid, true, JSON.stringify(result.errors));
+});
+
+test('rejects empty string for question.image when present', () => {
+  const c = validConfig();
+  c.categories[0].questions[0].image = '';
+  const result = validateConfig(c);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some(e => e.includes('image')));
+});
+
+test('rejects non-string question.image', () => {
+  const c = validConfig();
+  c.categories[0].questions[0].image = 123;
+  const result = validateConfig(c);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some(e => e.includes('image')));
+});
+
 test('reports multiple errors at once (does not short-circuit)', () => {
   const c = validConfig();
   c.teams.pop();

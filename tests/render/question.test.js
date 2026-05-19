@@ -173,3 +173,40 @@ test('renderQuestionText escapes question text', () => {
   assert.ok(!html.includes('<b>X</b>'));
   assert.ok(html.includes('&lt;b&gt;'));
 });
+
+// Optional image rendering
+
+test('renderQuestionText renders image when question.image is set', () => {
+  const c = cfg();
+  c.categories[0].questions[0].image = './images/movies-q1.jpg';
+  const html = renderQuestionText(c, stateInQuestion('QUESTION_TEXT', 0, 0));
+  assert.ok(/<img[^>]*src="\.\/images\/movies-q1\.jpg"/.test(html));
+});
+
+test('renderQuestionText renders no image when question.image is absent', () => {
+  const html = renderQuestionText(cfg(), stateInQuestion('QUESTION_TEXT', 0, 0));
+  assert.ok(!html.includes('<img'));
+});
+
+test('renderQuestionOptions renders image when present', () => {
+  const c = cfg();
+  c.categories[0].questions[0].image = 'https://example.com/x.png';
+  const html = renderQuestionOptions(c, stateInQuestion('QUESTION_OPTIONS', 0, 0, { selectedIndex: null }));
+  assert.ok(/<img[^>]*src="https:\/\/example\.com\/x\.png"/.test(html));
+});
+
+test('renderQuestionReview renders image when present', () => {
+  const c = cfg();
+  c.categories[0].questions[1].image = './images/r.jpg';
+  const html = renderQuestionReview(c, stateInQuestion('QUESTION_REVIEW', 0, 1, { selectedIndex: 1, verdict: 'correct' }));
+  assert.ok(/<img[^>]*src="\.\/images\/r\.jpg"/.test(html));
+});
+
+test('renderQuestionText escapes the image src attribute', () => {
+  const c = cfg();
+  c.categories[0].questions[0].image = '" onerror="alert(1)"';
+  const html = renderQuestionText(c, stateInQuestion('QUESTION_TEXT', 0, 0));
+  // The injected `"` must be escaped so the src attribute cannot be terminated.
+  assert.ok(!/src=""\s+onerror=/.test(html), 'attribute breakout must not be possible');
+  assert.ok(html.includes('&quot;'), 'quote should be HTML-escaped');
+});
