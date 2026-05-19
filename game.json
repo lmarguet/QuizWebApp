@@ -6,14 +6,14 @@
   ],
   "categories": [
     {
-      "name": "Movies",
+      "name": "Video Games",
       "questions": [
-        { "points": 100, "question": "Which 1994 film features a character named Forrest?", "options": ["Pulp Fiction", "Forrest Gump", "The Lion King", "Speed"], "correctIndex": 1, "image": "https://placehold.co/600x400/2a3568/f4a261?text=Forrest+Gump" },
-        { "points": 200, "question": "Who directed Inception?", "options": ["Christopher Nolan", "Steven Spielberg", "James Cameron", "Denis Villeneuve"], "correctIndex": 0, "image": "https://placehold.co/600x400/2a3568/f4a261?text=Inception" },
-        { "points": 300, "question": "What year was The Matrix released?", "options": ["1997", "1998", "1999", "2000"], "correctIndex": 2, "image": "https://placehold.co/600x400/2a3568/f4a261?text=The+Matrix" },
-        { "points": 500, "question": "Which actor played the Joker in The Dark Knight?", "options": ["Jared Leto", "Joaquin Phoenix", "Heath Ledger", "Jack Nicholson"], "correctIndex": 2, "image": "https://placehold.co/600x400/2a3568/f4a261?text=The+Dark+Knight" },
-        { "points": 700, "question": "Which Pixar film features a rat named Remy?", "options": ["Up", "Ratatouille", "Cars", "Wall-E"], "correctIndex": 1, "image": "https://placehold.co/600x400/2a3568/f4a261?text=Ratatouille" },
-        { "points": 1000, "question": "How many films are in the original Star Wars trilogy?", "options": ["3", "4", "5", "6"], "correctIndex": 0, "image": "https://placehold.co/600x400/2a3568/f4a261?text=Star+Wars" }
+        { "points": 100, "question": "In Minecraft, what green enemy explodes when it gets close to you?", "options": ["Enderman", "Creeper", "Minecraft's HR Department", "Exploding Cactus"], "correctIndex": 1 },
+        { "points": 200, "question": "Which game features the phrase 'The cake is a lie'?", "options": ["Great British Bake Off: Aperture Edition", "Half-Life", "Fallout 3", "Portal"], "correctIndex": 3 },
+        { "points": 300, "question": "In Halo, what is the real name of Master Chief?", "options": ["John-117", "Commander Shepard", "Steve from Accounting", "John Halo"], "correctIndex": 0 },
+        { "points": 500, "question": "In Metal Gear Solid, what boss famously reads the player's memory card and makes the controller move?", "options": ["Vulcan Raven", "Liquid Snake", "Psycho Mantis", "Revolver Ocelot"], "correctIndex": 2 },
+        { "points": 700, "question": "In Half-Life, what is the name of the research facility where the resonance cascade occurs?", "options": ["Aperture Science", "City 17", "Lambda Complex", "Black Mesa"], "correctIndex": 3 },
+        { "points": 1000, "question": "In The Secret of Monkey Island, what is the name of the pirate protagonist?", "options": ["Roger Wilco", "Guybrush Threepwood", "Wally B. Feed", "Guybrush Treebeard"], "correctIndex": 1 }
       ]
     },
     {
