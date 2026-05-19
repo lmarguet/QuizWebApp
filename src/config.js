@@ -21,6 +21,13 @@ export function validateConfig(config) {
       if (typeof team.color !== 'string' || team.color.trim() === '') {
         errors.push(`teams[${i}].color must be a non-empty string`);
       }
+      if (!Array.isArray(team.members)) {
+        errors.push(`teams[${i}].members must be an array of names`);
+      } else if (team.members.length === 0) {
+        errors.push(`teams[${i}].members must have at least 1 entry`);
+      } else if (!team.members.every(m => typeof m === 'string' && m.trim() !== '')) {
+        errors.push(`teams[${i}].members must all be non-empty strings`);
+      }
     });
   }
 

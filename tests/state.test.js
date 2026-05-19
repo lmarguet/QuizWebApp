@@ -21,9 +21,9 @@ test('createInitialState returns 5x6 grid of false', () => {
   }
 });
 
-test('createInitialState view is INTRO with revealed=0', () => {
+test('createInitialState view is INTRO phase=teams with revealed=0', () => {
   const s = createInitialState();
-  assert.deepEqual(s.view, { name: 'INTRO', revealed: 0 });
+  assert.deepEqual(s.view, { name: 'INTRO', phase: 'teams', revealed: 0 });
 });
 
 test('createInitialState answered rows are independent (no aliasing)', () => {

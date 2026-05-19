@@ -1,8 +1,8 @@
 {
   "teams": [
-    { "name": "The Bug Squashers", "color": "#E63946" },
-    { "name": "Null Pointers",     "color": "#2A9D8F" },
-    { "name": "Stack Overflows",   "color": "#F4A261" }
+    { "name": "The Bug Squashers", "color": "#E63946", "members": ["Alice", "Bob", "Carol"] },
+    { "name": "Null Pointers",     "color": "#2A9D8F", "members": ["Dave", "Eve", "Frank"] },
+    { "name": "Stack Overflows",   "color": "#F4A261", "members": ["Grace", "Heidi", "Ivan"] }
   ],
   "categories": [
     {

@@ -19,9 +19,9 @@ function validCategory(name = 'Cat') {
 function validConfig() {
   return {
     teams: [
-      { name: 'T1', color: '#f00' },
-      { name: 'T2', color: '#0f0' },
-      { name: 'T3', color: '#00f' },
+      { name: 'T1', color: '#f00', members: ['Alice'] },
+      { name: 'T2', color: '#0f0', members: ['Bob', 'Carol'] },
+      { name: 'T3', color: '#00f', members: ['Dave', 'Eve', 'Frank'] },
     ],
     categories: Array.from({ length: 5 }, (_, i) => validCategory(`Cat${i}`)),
   };
@@ -96,6 +96,30 @@ test('rejects missing team name', () => {
   const result = validateConfig(c);
   assert.equal(result.valid, false);
   assert.ok(result.errors.some(e => e.includes('teams[1].name')));
+});
+
+test('rejects missing team members field', () => {
+  const c = validConfig();
+  delete c.teams[0].members;
+  const result = validateConfig(c);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some(e => e.includes('teams[0].members')));
+});
+
+test('rejects empty team members array', () => {
+  const c = validConfig();
+  c.teams[2].members = [];
+  const result = validateConfig(c);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some(e => e.includes('teams[2].members')));
+});
+
+test('rejects non-string entry in team members', () => {
+  const c = validConfig();
+  c.teams[1].members = ['Bob', ''];
+  const result = validateConfig(c);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some(e => e.includes('teams[1].members')));
 });
 
 test('reports multiple errors at once (does not short-circuit)', () => {

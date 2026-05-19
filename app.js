@@ -123,9 +123,12 @@ function handleTileClick(target) {
 function handleAction(action, actionEl) {
   if (action === 'intro-advance') {
     if (state.view.name !== 'INTRO') return;
-    const total = config.categories.length;
-    if (state.view.revealed < total) {
-      setState({ ...state, view: { ...state.view, revealed: state.view.revealed + 1 } });
+    const { phase, revealed } = state.view;
+    const total = phase === 'teams' ? config.teams.length : config.categories.length;
+    if (revealed < total) {
+      setState({ ...state, view: { ...state.view, revealed: revealed + 1 } });
+    } else if (phase === 'teams') {
+      setState({ ...state, view: { name: 'INTRO', phase: 'categories', revealed: 0 } });
     } else {
       setState({ ...state, view: { name: 'BOARD' } });
     }

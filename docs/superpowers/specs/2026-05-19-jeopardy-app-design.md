@@ -47,9 +47,9 @@ Jeopardy-App/
 ```json
 {
   "teams": [
-    { "name": "The Bug Squashers", "color": "#E63946" },
-    { "name": "Null Pointers",     "color": "#2A9D8F" },
-    { "name": "Stack Overflows",   "color": "#F4A261" }
+    { "name": "The Bug Squashers", "color": "#E63946", "members": ["Alice", "Bob", "Carol"] },
+    { "name": "Null Pointers",     "color": "#2A9D8F", "members": ["Dave", "Eve", "Frank"] },
+    { "name": "Stack Overflows",   "color": "#F4A261", "members": ["Grace", "Heidi", "Ivan"] }
   ],
   "categories": [
     {
@@ -76,7 +76,7 @@ Jeopardy-App/
 
 ### Field rules
 
-- `teams`: exactly 3 entries. Each has `name` (string) and `color` (any valid CSS color string).
+- `teams`: exactly 3 entries. Each has `name` (string), `color` (any valid CSS color string), and `members` (non-empty array of non-empty strings — the people on the team, used in the teams-intro reveal).
 - `categories`: exactly 5 entries. Each has `name` (string) and `questions` (exactly 6 entries).
 - `questions[].points`: integer ≥ 0. Each question carries its own value; there is no per-row convention.
 - `questions[].question`: the prompt text shown to all players.
@@ -95,7 +95,10 @@ On app start, after `fetch('./game.json')` resolves, the config is validated aga
 
 ### Screens (states)
 
-0. **INTRO** — opening reveal. Shown on the very first load (no saved state) and after every Reset / New game. Displays a vertical list of 5 slots, one per category; unrevealed slots show "?". The host clicks **Next** to reveal the next category name (top to bottom). Once all 5 are revealed the button becomes **Start game**, which transitions to BOARD. Persistence is intentionally skipped during INTRO so a refresh mid-intro restarts from the beginning rather than landing in a half-revealed state.
+0. **INTRO** — opening reveal in two phases (`phase: 'teams' | 'categories'`). Shown on the very first load (no saved state) and after every Reset / New game.
+   - **Teams phase** (first): vertical list of 3 slots, one per team. Each unrevealed slot shows "?". The host clicks **Next** to reveal the next team — its name and roster of members appear, accented with the team's color. Once all 3 are revealed, the next click moves to the categories phase.
+   - **Categories phase** (second): vertical list of 5 slots, one per category, same reveal flow. Once all 5 are revealed the button becomes **Start game**, which transitions to BOARD.
+   - Persistence is intentionally skipped during INTRO so a refresh mid-intro restarts from the beginning rather than landing in a half-revealed state.
 1. **BOARD** — main game view. Shows the 5×6 grid of point tiles, the sidebar scoreboard, and which team is up next.
 2. **QUESTION_TEXT** — a tile has been opened. Shows the question prompt large, with a host button: **Show options**.
 3. **QUESTION_OPTIONS** — same question, with the 3–5 multiple-choice options revealed (labelled A, B, C, …). Options are clickable: the host clicks the answer the team committed to, and it becomes the selection (visually outlined in the accent color). Host buttons: **Submit** (disabled until an option is selected) and **Back to board** (escape).
@@ -191,7 +194,8 @@ QUESTION_REVIEW
     [false, false, false, false, false, false],
     // ...4 more
   ],
-  view: { name: 'INTRO', revealed: 0 }   // fresh state — categories reveal one-by-one
+  view: { name: 'INTRO', phase: 'teams', revealed: 0 }      // fresh state — reveal teams first
+  // or { name: 'INTRO', phase: 'categories', revealed: 0 } // then reveal categories
   // or { name: 'BOARD' }
   // or { name: 'QUESTION_TEXT', category: 2, question: 3 }
   // or { name: 'QUESTION_OPTIONS', category: 2, question: 3, selectedIndex: null | 0..options.length-1 }
