@@ -89,7 +89,10 @@ function render() {
         ${renderScoreboard(config, state)}
       </main>
       <footer class="app-footer">
-        <button class="btn btn-secondary" data-action="reset">Reset game</button>
+        <div class="footer-actions">
+          <button class="btn btn-secondary" data-action="reset">Reset game</button>
+          <button class="btn btn-secondary" data-action="show-results">Show results</button>
+        </div>
         <span>${answeredCount(state)} of 30 answered</span>
       </footer>
     </div>
@@ -162,6 +165,10 @@ function handleAction(action, actionEl) {
     } else {
       setState({ ...state, view: { name: 'BOARD' } });
     }
+    return;
+  }
+  if (action === 'show-results') {
+    setState({ ...state, view: { name: 'GAME_OVER' } });
     return;
   }
   if (action === 'reset' || action === 'new-game') {

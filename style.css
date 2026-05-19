@@ -81,6 +81,11 @@ html, body {
   color: var(--text-dim);
 }
 
+.footer-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 /* ---- Board ---- */
 
 .board {
@@ -283,9 +288,30 @@ html, body {
   padding: 2rem;
 }
 
-.game-over h1 {
+.game-over h1,
+.game-over .game-over-title {
   font-size: 3rem;
-  margin: 0 0 1.5rem;
+  margin: 0 0 0.5rem;
+}
+
+.game-over .winner-name {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.tie-names {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.5rem;
+}
+
+.game-over-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
 }
 
 .game-over-row {
@@ -310,7 +336,6 @@ html, body {
 .game-over-row .rank { font-weight: 800; opacity: 0.6; }
 .game-over-row .team-score { font-size: 2rem; font-weight: 800; }
 
-.game-over .btn { margin-top: 1.5rem; }
 
 /* ---- Intro / category reveal ---- */
 

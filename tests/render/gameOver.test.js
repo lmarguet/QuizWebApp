@@ -22,6 +22,23 @@ function endState(scores) {
   };
 }
 
+function partialEndState(scores, answeredCount = 5) {
+  const answered = Array.from({ length: 5 }, () => Array(6).fill(false));
+  let n = answeredCount;
+  outer: for (let r = 0; r < 5; r++) {
+    for (let c = 0; c < 6; c++) {
+      if (n-- <= 0) break outer;
+      answered[r][c] = true;
+    }
+  }
+  return {
+    pickerIndex: 0,
+    scores,
+    answered,
+    view: { name: 'GAME_OVER' },
+  };
+}
+
 test('renderGameOver lists teams in descending score order', () => {
   const html = renderGameOver(cfg(), endState([100, 500, 300]));
   const i1 = html.indexOf('Null Pointers');
@@ -52,4 +69,37 @@ test('renderGameOver shows each team\'s score', () => {
   assert.ok(html.includes('100'));
   assert.ok(html.includes('500'));
   assert.ok(html.includes('300'));
+});
+
+test('renderGameOver header announces the sole winner by name', () => {
+  const html = renderGameOver(cfg(), endState([100, 500, 300]));
+  assert.ok(/Winner/i.test(html), 'expected "Winner" wording in header');
+  assert.ok(html.includes('Null Pointers'));
+});
+
+test('renderGameOver header announces a tie when two teams share top score', () => {
+  const html = renderGameOver(cfg(), endState([500, 500, 200]));
+  assert.ok(/tie/i.test(html), 'expected "tie" wording in header');
+  assert.ok(html.includes('Bug Squashers'));
+  assert.ok(html.includes('Null Pointers'));
+});
+
+test('renderGameOver header announces a 3-way tie', () => {
+  const html = renderGameOver(cfg(), endState([300, 300, 300]));
+  assert.ok(/tie/i.test(html));
+  for (const name of ['Bug Squashers', 'Null Pointers', 'Stack Overflows']) {
+    assert.ok(html.includes(name));
+  }
+});
+
+test('renderGameOver shows Back to board button when not all tiles answered', () => {
+  const html = renderGameOver(cfg(), partialEndState([100, 200, 300], 5));
+  assert.ok(html.includes('data-action="back-to-board"'),
+    'Back to board button should appear on early-results view');
+});
+
+test('renderGameOver does NOT show Back to board when all tiles answered', () => {
+  const html = renderGameOver(cfg(), endState([100, 200, 300]));
+  assert.ok(!html.includes('data-action="back-to-board"'),
+    'no Back to board button when game is truly complete');
 });
