@@ -6,3 +6,14 @@ export function createInitialState() {
     view: { name: 'BOARD' },
   };
 }
+
+export function applyVerdict(state, categoryIdx, questionIdx, verdict, points) {
+  const scores = state.scores.slice();
+  if (verdict === 'correct') {
+    scores[state.pickerIndex] = scores[state.pickerIndex] + points;
+  }
+  const answered = state.answered.map(row => row.slice());
+  answered[categoryIdx][questionIdx] = true;
+  const pickerIndex = (state.pickerIndex + 1) % 3;
+  return { ...state, scores, answered, pickerIndex };
+}
