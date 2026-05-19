@@ -21,10 +21,38 @@ const root = document.getElementById('root');
 
 let config = null;
 let state = null;
+let previousScores = null;
 
-function render() {
+function animateScoreCount(el, from, to, duration = 700) {
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+    el.textContent = String(Math.round(from + (to - from) * eased));
+    if (t < 1) {
+      requestAnimationFrame(step);
+    } else {
+      el.classList.remove('score-animating');
+    }
+  }
+  el.classList.add('score-animating');
+  el.textContent = String(from);
+  requestAnimationFrame(step);
+}
+
+function applyScoreAnimations() {
+  if (!previousScores) return;
+  state.scores.forEach((newScore, i) => {
+    if (newScore > previousScores[i]) {
+      const el = root.querySelector(`.team-panel[data-team="${i}"] .team-score`);
+      if (el) animateScoreCount(el, previousScores[i], newScore);
+    }
+  });
+}
+
+function renderHTML() {
   if (state.view.name === 'GAME_OVER') {
-    root.innerHTML = `
+    return `
       <div class="app">
         <header class="app-header">
           <span>Team Quiz</span>
@@ -38,11 +66,10 @@ function render() {
         </footer>
       </div>
     `;
-    return;
   }
 
   if (state.view.name === 'INTRO') {
-    root.innerHTML = `
+    return `
       <div class="app">
         <header class="app-header">
           <span>Team Quiz</span>
@@ -56,7 +83,6 @@ function render() {
         </footer>
       </div>
     `;
-    return;
   }
 
   const pickerName = config.teams[state.pickerIndex].name;
@@ -78,7 +104,7 @@ function render() {
       center = `<div>Unknown view: ${state.view.name}</div>`;
   }
 
-  root.innerHTML = `
+  return `
     <div class="app">
       <header class="app-header">
         <span>Team Quiz</span>
@@ -97,6 +123,12 @@ function render() {
       </footer>
     </div>
   `;
+}
+
+function render() {
+  root.innerHTML = renderHTML();
+  applyScoreAnimations();
+  previousScores = state.scores.slice();
 }
 
 function escapeText(s) {
