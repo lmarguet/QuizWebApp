@@ -89,3 +89,40 @@ test('applyVerdict accumulates score across multiple corrects', () => {
   assert.deepEqual(s.scores, [500, 200, 300]);
   assert.equal(s.pickerIndex, 1);
 });
+
+import { allAnswered, answeredCount } from '../src/state.js';
+
+test('allAnswered is false for fresh state', () => {
+  assert.equal(allAnswered(createInitialState()), false);
+});
+
+test('allAnswered is true when every tile is true', () => {
+  const s = createInitialState();
+  s.answered = Array.from({ length: 5 }, () => Array(6).fill(true));
+  assert.equal(allAnswered(s), true);
+});
+
+test('allAnswered is false when one tile is false', () => {
+  const s = createInitialState();
+  s.answered = Array.from({ length: 5 }, () => Array(6).fill(true));
+  s.answered[3][2] = false;
+  assert.equal(allAnswered(s), false);
+});
+
+test('answeredCount is 0 for fresh state', () => {
+  assert.equal(answeredCount(createInitialState()), 0);
+});
+
+test('answeredCount is 30 when all answered', () => {
+  const s = createInitialState();
+  s.answered = Array.from({ length: 5 }, () => Array(6).fill(true));
+  assert.equal(answeredCount(s), 30);
+});
+
+test('answeredCount counts a partial board', () => {
+  let s = createInitialState();
+  s = applyVerdict(s, 0, 0, 'correct', 100);
+  s = applyVerdict(s, 1, 2, 'wrong', 100);
+  s = applyVerdict(s, 4, 5, 'correct', 100);
+  assert.equal(answeredCount(s), 3);
+});

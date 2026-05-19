@@ -17,3 +17,11 @@ export function applyVerdict(state, categoryIdx, questionIdx, verdict, points) {
   const pickerIndex = (state.pickerIndex + 1) % 3;
   return { ...state, scores, answered, pickerIndex };
 }
+
+export function allAnswered(state) {
+  return state.answered.every(row => row.every(v => v === true));
+}
+
+export function answeredCount(state) {
+  return state.answered.reduce((sum, row) => sum + row.filter(v => v).length, 0);
+}
