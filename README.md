@@ -1,4 +1,4 @@
-# Jeopardy App
+# Jeopardy-style App
 
 A single-screen, locally-run web app for hosting a multiple-choice Jeopardy-style game over Zoom screenshare. 3 teams pick from a 5-category × 6-question board (30 questions total). Each question has 2–5 multiple-choice options. **Content is fully driven by `game.json`** — edit that file to set up your own teams, categories, and questions.
 
